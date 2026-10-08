@@ -1,0 +1,13 @@
+---
+description: LiveKit voice agent conventions
+globs: agent/**
+alwaysApply: false
+---
+# Voice agent (LiveKit Agents)
+
+- Python 3.12, `uv`, pinned `livekit-agents` version. Entrypoint is `concierge/main.py` using the LiveKit Agents CLI (`start`, `dev`, `download-files`).
+- The concierge prompt lives in `concierge/prompts/concierge.md`, never inline in code.
+- Property facts come only from `search_faq` results. On no match: call `record_unanswered`, apologize gracefully, confirm the question was noted, offer the front desk (extension 0).
+- All backend calls go through `concierge/backend_client.py` with short timeouts (~2 s); on failure, speak a polite fallback — never crash the session.
+- Settings only through `concierge/config.py` (pydantic-settings).
+- Fetch the active voice from the backend when a session starts (NF-5).

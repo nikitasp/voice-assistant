@@ -1,0 +1,23 @@
+# PRD source (markdown copy lives in docs/)
+Meridian_Voice_Concierge_PRD.docx
+
+# Environment / secrets
+.env
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+dist/
+
+# PyCharm / IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws

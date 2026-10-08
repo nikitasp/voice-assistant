@@ -1,0 +1,17 @@
+---
+description: FastAPI backend conventions
+globs: backend/**
+alwaysApply: false
+---
+# Backend (FastAPI)
+
+- Python 3.12 (`requires-python` and the Docker base image). Dependencies via `uv`; commit `uv.lock`.
+- Layers: `api/routes` (thin, HTTP only) → `services` (logic) → `models` (SQLAlchemy 2.0). Routes never contain queries.
+- Request/response bodies are Pydantic v2 models in `schemas/`; never return ORM objects.
+- Async everywhere: async SQLAlchemy + asyncpg, `httpx.AsyncClient` for outbound calls. No blocking I/O in request handlers.
+- Settings only through `app/config.py` (pydantic-settings); no `os.getenv` elsewhere.
+- Schema changes only through Alembic migrations. Migrations and seeding run in the app lifespan on startup.
+- Routes live under `/api`, except `/health`. Errors use `HTTPException` with a clear `detail`.
+- Seed data lives in `app/seed/`; seeding must be idempotent.
+- Tests: pytest + pytest-asyncio with httpx's ASGI transport, against real Postgres with pgvector. Every endpoint has a success test and a main failure-path test.
+- Lint and format with ruff; type hints on all public functions.

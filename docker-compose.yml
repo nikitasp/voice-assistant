@@ -1,0 +1,88 @@
+# Local evaluation stack.
+# Run from the repository root:
+#   docker compose up --build
+# Variables are read from ./.env (copy from deploy/local/.env.example).
+
+name: meridian
+
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-meridian}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-meridian}
+      POSTGRES_DB: ${POSTGRES_DB:-meridian}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../deploy/local/backend.Dockerfile
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-meridian}:${POSTGRES_PASSWORD:-meridian}@db:5432/${POSTGRES_DB:-meridian}
+      LIVEKIT_PUBLIC_URL: ${LIVEKIT_PUBLIC_URL:?set LIVEKIT_PUBLIC_URL in .env}
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:?set LIVEKIT_API_KEY in .env}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:?set LIVEKIT_API_SECRET in .env}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      TTS_API_KEY: ${TTS_API_KEY:-}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  agent:
+    build:
+      context: ./agent
+      dockerfile: ../deploy/local/agent.Dockerfile
+    environment:
+      BACKEND_URL: http://backend:8000
+      LIVEKIT_URL: ${LIVEKIT_URL:?set LIVEKIT_URL in .env}
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET}
+      LLM_API_KEY: ${LLM_API_KEY:?set LLM_API_KEY in .env}
+      STT_API_KEY: ${STT_API_KEY:?set STT_API_KEY in .env}
+      TTS_API_KEY: ${TTS_API_KEY:?set TTS_API_KEY in .env}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./web
+      dockerfile: ../deploy/local/web.Dockerfile
+      additional_contexts:
+        deploy: ./deploy/local
+    ports:
+      - "${WEB_PORT:-3000}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # Optional self-hosted LiveKit server: --profile local-livekit
+  # Uses host networking so that the browser and the agent container can both
+  # reach the WebRTC ports (Linux only).
+  livekit:
+    image: livekit/livekit-server:latest
+    profiles: ["local-livekit"]
+    command: --dev --bind 0.0.0.0
+    network_mode: host
+
+volumes:
+  pgdata:
