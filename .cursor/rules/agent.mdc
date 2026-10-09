@@ -11,3 +11,5 @@ alwaysApply: false
 - All backend calls go through `concierge/backend_client.py` with short timeouts (~2 s); on failure, speak a polite fallback — never crash the session.
 - Settings only through `concierge/config.py` (pydantic-settings).
 - Fetch the active voice from the backend when a session starts (NF-5).
+- `Concierge` must work in an `AgentSession` with only an LLM (text mode, TC-4) and must not speak in `on_enter`; the entrypoint triggers the greeting.
+- Keep the contracts in `docs/testing.md`; run `uv run pytest -m "not e2e"` after changing agent behaviour.

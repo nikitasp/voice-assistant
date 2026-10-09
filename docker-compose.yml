@@ -1,9 +1,11 @@
 # Local evaluation stack.
 # Run from the repository root:
 #   docker compose up --build
-# Variables are read from ./.env (copy from deploy/local/.env.example).
+# Variables are read from ./.env (copy from .env.example).
 
-name: meridian
+# Project name prefixes all containers, networks and volumes
+# (e.g. meridian-voice-backend-1, meridian-voice_pgdata).
+name: meridian-voice
 
 services:
   db:

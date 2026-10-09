@@ -1,0 +1,70 @@
+# KB-5: every row of "Property Information (Seed Data)" in docs/requirements.md
+# must exist as an FAQ item with this slug.
+topics:
+  general:
+    - property-location
+    - casino-hours
+    - check-in
+    - check-out
+    - valet-parking
+    - self-parking
+    - dress-code
+    - age-requirement
+    - wifi
+  casino-gaming:
+    - slot-machines
+    - blackjack
+    - poker-room
+    - roulette
+    - baccarat
+    - craps
+    - sports-book
+    - high-limit-salon
+    - players-club
+  accommodations:
+    - deluxe-room
+    - premier-room
+    - luxury-suite
+    - penthouse-suite
+    - chairmans-villa
+    - accessible-rooms
+  restaurants:
+    - aurelia
+    - silk-road
+    - the-steakhouse
+    - cafe-meridian
+    - pool-bar-grill
+  bars-lounges:
+    - eclipse-lounge
+    - the-vault
+    - casino-floor-bars
+  entertainment-amenities:
+    - meridian-spa
+    - fitness-center
+    - pool-complex
+    - meridian-theater
+    - nova-nightclub
+  celebrations-events:
+    - weddings
+    - private-events
+    - birthday-anniversary
+    - bachelor-bachelorette
+  partner-discounts:
+    - partner-carbone
+    - partner-omega-mart
+    - partner-helicopter-tours
+    - partner-topgolf
+    - partner-spa-aquae
+    - partner-fremont-street
+
+# Spot checks that seeded answers carry the PRD facts verbatim.
+facts:
+  poker-room: ["$200", "11 AM", "7 PM"]
+  aurelia: ["$285", "6 PM", "10 PM"]
+  valet-parking: ["$25"]
+  cafe-meridian: ["$45"]
+  pool-complex: ["$300", "$100"]
+  nova-nightclub: ["$50", "$2,000"]
+  deluxe-room: ["$299"]
+  penthouse-suite: ["$2,500"]
+  partner-carbone: ["15%"]

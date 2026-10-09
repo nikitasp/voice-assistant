@@ -4,6 +4,8 @@ Tasks derived from [`../requirements.md`](../requirements.md). Requirement IDs (
 
 Complete core tasks before starting bonus tasks.
 
+Acceptance tests are written before the code: see [`../testing.md`](../testing.md). A task is done when the tests mapped to its requirements pass.
+
 ## Core
 
 | # | Task | Requirements | Depends on |
@@ -30,3 +32,9 @@ Complete core tasks before starting bonus tasks.
 | 15 | [Voice configuration backend](15-voice-config-backend.md) | VX-1, VX-3, NF-5 | 07 |
 | 16 | [Voice configuration UI](16-voice-config-ui.md) | VX-2, VX-4, AP-9 – AP-12 | 12, 15 |
 | 17 | [Integrated playground](17-integrated-playground.md) | AP-13 – AP-16 | 09, 12, 15 |
+
+## Additional (internal)
+
+| # | Task | Requirements | Depends on |
+| --- | --- | --- | --- |
+| 18 | [Text chat](18-text-chat.md) | TC-1 – TC-5 | 07, 09 |

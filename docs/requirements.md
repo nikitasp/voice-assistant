@@ -148,6 +148,19 @@ A React-based admin panel for managing the concierge system.
 | AP-15 | Allows admin to have full voice conversation with the concierge |
 | AP-16 | Clearly labeled as "Test Mode" or "Playground" |
 
+## Functional Requirements: Additional (internal)
+*Added by the implementation team; not part of the original PRD. Purpose: make the concierge's behaviour easy to check question by question.*
+
+### Text Chat
+
+| ID | Requirement |
+| --- | --- |
+| TC-1 | Guest can type a question in the playground instead of speaking |
+| TC-2 | Concierge replies to typed questions; the playground shows a transcript of both sides of the conversation |
+| TC-3 | Text and voice use the same agent, prompt, tools and knowledge base — no separate chat implementation |
+| TC-4 | The agent can run a text-only session without STT/TTS, used by automated tests |
+| TC-5 | A command-line tool sends a question (or a file of questions) to the agent in text mode and prints the reply and the tools it called |
+
 ## Property Information (Seed Data)
 ### General Information
 

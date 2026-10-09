@@ -1,0 +1,55 @@
+# KB-2, API-1, API-3: natural-language FAQ search.
+# `expected` lists acceptable slugs for the top result.
+# Add a case here whenever a real guest question is answered wrongly.
+match:
+  # PRD example conversations
+  - query: Is the poker room open right now?
+    expected: [poker-room]
+  - query: What's your best restaurant?
+    expected: [aurelia]
+  - query: Are there any good restaurants nearby you'd recommend?
+    expected: [partner-carbone]
+  - query: I want to propose to my girlfriend this weekend. Can you help?
+    expected: [birthday-anniversary, eclipse-lounge]
+
+  # Paraphrases with little or no keyword overlap
+  - query: Where can I get a massage?
+    expected: [meridian-spa]
+  - query: When can I get into my room?
+    expected: [check-in]
+  - query: What time do I have to leave my room on the last day?
+    expected: [check-out]
+  - query: Is there somewhere to eat sushi?
+    expected: [silk-road]
+  - query: How much does it cost to have someone park my car?
+    expected: [valet-parking]
+  - query: Can my teenage son come with me to the casino floor?
+    expected: [age-requirement]
+  - query: Where can I watch the football game?
+    expected: [sports-book]
+  - query: Can I work out at five in the morning?
+    expected: [fitness-center]
+  - query: Is there a place to go dancing on Saturday night?
+    expected: [nova-nightclub]
+  - query: Do you have rooms for wheelchair users?
+    expected: [accessible-rooms]
+  - query: Where can I smoke a cigar and have a whiskey?
+    expected: [the-vault]
+  - query: Do I get a deal at Topgolf?
+    expected: [partner-topgolf]
+  - query: We're getting married. What packages do you have?
+    expected: [weddings]
+  - query: Do I need a jacket for dinner at the French restaurant?
+    expected: [aurelia, dress-code]
+  - query: How do I earn points when I gamble?
+    expected: [players-club]
+  - query: Is the internet free?
+    expected: [wifi]
+
+# Questions the knowledge base cannot answer (VC-5 path).
+no_match:
+  - Can I bring my dog to the hotel?
+  - Is there a shuttle to the airport?
+  - Can I pay with cryptocurrency?
+  - What is the capital of France?
+  - Do you have a dentist on site?

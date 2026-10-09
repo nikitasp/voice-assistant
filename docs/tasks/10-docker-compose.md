@@ -13,9 +13,9 @@ The whole core system starts with one Docker Compose command.
 - Dockerfiles in `deploy/local/`: `backend.Dockerfile`, `agent.Dockerfile`, `web.Dockerfile` (+ `web.nginx.conf`).
 - Health checks and `depends_on` so services start in the right order.
 - Migrations and seeding run automatically.
-- All configuration from `./.env` at the repo root (template: `deploy/local/.env.example`).
+- All configuration from `./.env` at the repo root (template: `.env.example`).
 
 ## Acceptance criteria
 
-- [ ] On a clean machine with Docker: `cp deploy/local/.env.example .env`, fill credentials, `docker compose up --build` → working voice conversation in the browser.
+- [ ] On a clean machine with Docker: `cp .env.example .env`, fill credentials, `docker compose up --build` → working voice conversation in the browser.
 - [ ] Restarting the stack keeps data (named volume for the database).

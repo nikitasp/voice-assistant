@@ -19,6 +19,7 @@ Load the Meridian property information from the PRD into the knowledge base.
   - Celebrations & special events
   - Partner discounts
 - Store seed data in a versioned file (e.g. `backend/seed/faq.json` or `.yaml`).
+- Each item has the slug listed in `backend/tests/data/seed_slugs.yaml`; the slug is the upsert key.
 - Seeding is idempotent: re-running does not create duplicates.
 - Seeding runs automatically on first start in Docker.
 - If search uses embeddings, compute them during seeding.

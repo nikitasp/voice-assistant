@@ -1,0 +1,54 @@
+# End-to-end scenarios against the real, seeded backend.
+# `tools`: tool names that must be called, in this order (other calls may appear in between).
+# `intent`: what a correct reply does, checked by the LLM judge.
+# Add a scenario whenever you want to pin down how the concierge reacts to a question.
+
+- id: prd-1-poker-open
+  question: Is the poker room open right now?
+  tools: [search_faq]
+  intent: >-
+    Says the poker room is open 24 hours a day, 7 days a week. May mention the games offered
+    or the daily tournaments.
+
+- id: prd-2-best-restaurant
+  question: What's your best restaurant?
+  tools: [search_faq]
+  intent: >-
+    Recommends Aurelia, modern French cuisine with two Michelin stars, open for dinner from 6 to 10 PM,
+    reservations and formal attire required.
+
+- id: prd-3-pets
+  question: Can I bring my dog to the hotel?
+  tools: [search_faq, record_unanswered]
+  intent: >-
+    Says it does not have information about pet policies, confirms the question has been noted
+    for the team, and does not invent a pet policy.
+
+- id: prd-4-nearby-restaurant
+  question: Are there any good restaurants nearby you'd recommend?
+  tools: [search_faq]
+  intent: >-
+    Recommends Carbone, Italian fine dining about five minutes away, with 15% off and priority
+    reservations for Meridian guests who show their room key.
+
+- id: prd-5-proposal
+  question: I want to propose to my girlfriend this weekend. Can you help?
+  tools: [search_faq]
+  intent: >-
+    Responds warmly and suggests a celebration option from the property, such as the celebration
+    package (from $500, room upgrade, champagne, dinner credit) or Eclipse Lounge.
+
+- id: checkout-time
+  question: What time is checkout?
+  tools: [search_faq]
+  intent: Says checkout is at 11 AM and may mention late checkout for suite guests.
+
+- id: valet-cost
+  question: How much is valet parking if I'm not staying at the hotel?
+  tools: [search_faq]
+  intent: Says valet parking costs $25 for visitors and is complimentary for hotel guests.
+
+- id: kids-casino
+  question: Can my 18 year old son come to the casino with me?
+  tools: [search_faq]
+  intent: Explains politely that the casino floor is 21 and over.

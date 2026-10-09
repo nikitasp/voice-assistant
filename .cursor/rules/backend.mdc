@@ -13,5 +13,5 @@ alwaysApply: false
 - Schema changes only through Alembic migrations. Migrations and seeding run in the app lifespan on startup.
 - Routes live under `/api`, except `/health`. Errors use `HTTPException` with a clear `detail`.
 - Seed data lives in `app/seed/`; seeding must be idempotent.
-- Tests: pytest + pytest-asyncio with httpx's ASGI transport, against real Postgres with pgvector. Every endpoint has a success test and a main failure-path test.
+- Tests: pytest + pytest-asyncio with httpx's ASGI transport and `asgi-lifespan`, against real Postgres with pgvector (`TEST_DATABASE_URL`). Acceptance tests in `backend/tests/` define the API contract (see `docs/testing.md`); change them only when a requirement changes.
 - Lint and format with ruff; type hints on all public functions.

@@ -7,9 +7,9 @@ alwaysApply: true
 - Spec: `docs/requirements.md`. Work items: `docs/tasks/` — read the relevant task file and meet its acceptance criteria. Reference requirement IDs (e.g. API-1, NF-5) in commit messages.
 - Repository layout: follow `docs/project-structure.md`. Update that document when the layout changes.
 - Services: `backend/` (FastAPI, sole owner of the database), `agent/` (LiveKit Agents, Python), `web/` (React: playground + admin). Each service has its own dependency manifest.
-- `docker-compose.yml` lives at the repository root. Dockerfiles and `.env.example` live in `deploy/local/`, not in service folders. Run the stack with `docker compose up --build`.
+- `docker-compose.yml` and `.env.example` live at the repository root. Dockerfiles live in `deploy/local/`, not in service folders. Run the stack with `docker compose up --build`.
 - The agent talks to the backend only over HTTP. Nothing outside `backend/` connects to the database.
-- Configuration comes only from environment variables; every variable is listed in `deploy/local/.env.example` (copy to `./.env` at the repo root). Never commit secrets or `.env` files.
+- Configuration comes only from environment variables; every variable is listed in `.env.example` (copy to `./.env`). Never commit secrets or `.env` files.
 - Do not build out-of-scope features: guest or admin authentication, bookings, payments, PMS integration, multi-language, mobile.
 - Record non-obvious technical decisions in `docs/technical-decisions.md`.
 
