@@ -1,0 +1,70 @@
+from __future__ import annotations
+
+import logging
+
+from livekit.agents import (
+    AgentSession,
+    JobContext,
+    JobProcess,
+    WorkerOptions,
+    cli,
+    room_io,
+)
+from livekit.plugins import silero
+from livekit.plugins.turn_detector.multilingual import MultilingualModel
+
+from concierge.assistant import Concierge
+from concierge.backend_client import BackendClient
+from concierge.config import get_settings
+from concierge.models import build_llm, build_stt, build_tts
+
+logger = logging.getLogger("meridian.concierge")
+
+
+def prewarm(proc: JobProcess) -> None:
+    proc.userdata["vad"] = silero.VAD.load()
+
+
+async def entrypoint(ctx: JobContext) -> None:
+    ctx.log_context_fields = {"room": ctx.room.name}
+    settings = get_settings()
+
+    voice_id = settings.default_tts_voice_id
+    try:
+        active = await BackendClient().get_active_provider_voice_id()
+        if active:
+            voice_id = active
+    except Exception:
+        logger.exception("Could not fetch active voice; using default")
+
+    session = AgentSession(
+        stt=build_stt(),
+        llm=build_llm(),
+        tts=build_tts(voice_id),
+        vad=ctx.proc.userdata["vad"],
+        turn_detection=MultilingualModel(),
+        preemptive_generation=True,
+        allow_interruptions=True,
+        tts_text_transforms=["filter_emoji", "filter_markdown"],
+    )
+
+    await session.start(
+        agent=Concierge(),
+        room=ctx.room,
+        room_options=room_io.RoomOptions(text_input=True),
+    )
+    await session.generate_reply(
+        instructions=(
+            "Greet the guest warmly as the Meridian concierge and invite them to ask "
+            "about the property."
+        )
+    )
+
+
+if __name__ == "__main__":
+    cli.run_app(
+        WorkerOptions(
+            entrypoint_fnc=entrypoint,
+            prewarm_fnc=prewarm,
+        )
+    )

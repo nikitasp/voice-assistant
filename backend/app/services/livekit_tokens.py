@@ -18,6 +18,7 @@ def create_room_token(*, api_key: str, api_secret: str, public_url: str) -> dict
                 room=room,
                 can_publish=True,
                 can_subscribe=True,
+                can_publish_data=True,
             )
         )
         .to_jwt()

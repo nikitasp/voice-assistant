@@ -1,11 +1,13 @@
 from datetime import datetime
 from uuid import uuid4
 
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import DateTime, Index, Integer, String, Text, func, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
+from app.models.faq import EMBEDDING_DIM
 
 
 class UnansweredQuestion(Base):
@@ -30,3 +32,4 @@ class UnansweredQuestion(Base):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="open", index=True)
+    embedding = mapped_column(Vector(EMBEDDING_DIM), nullable=True)

@@ -21,7 +21,8 @@ Browser (web/) ──HTTP──► Backend (FastAPI) ──SQL──► Postgres
 ## Unanswered question grouping
 
 - Incoming questions are normalized: trim, lowercase, strip trailing punctuation/whitespace.
-- An open row with the same normalized text is incremented; otherwise a new open row is created.
+- An open row with the same normalized text is incremented first.
+- Otherwise the question is embedded (same MiniLM model as FAQ search). An open row whose cosine similarity is at least `UNANSWERED_SIMILARITY_THRESHOLD` (default `0.82`) is treated as a near-duplicate and incremented; else a new open row is created with its embedding stored.
 - Status values `open` / `converted` / `dismissed` support the admin convert/dismiss flow without schema changes.
 
 ## Voice stack

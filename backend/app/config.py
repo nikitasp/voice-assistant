@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     llm_api_key: str | None = None
     tts_api_key: str | None = None
     faq_search_threshold: float = 0.42
+    # Near-duplicate unanswered questions (paraphrases) share a row above this score.
+    unanswered_similarity_threshold: float = 0.82
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     cors_origins: str = "http://localhost:3000,http://localhost:5173"
 

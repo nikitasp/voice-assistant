@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.unanswered import UnansweredQuestion
 from app.schemas.unanswered import UnansweredConvertRequest, UnansweredOut
+from app.services.embeddings import EmbeddingService
 from app.services.faq_search import FaqService
 
 _TRAILING_PUNCT = re.compile(r"[\s\?\.\!\,\;\:]+$")
@@ -22,19 +23,33 @@ def normalize_question(question: str) -> str:
 
 
 class UnansweredService:
-    def __init__(self, faq_service: FaqService) -> None:
+    def __init__(
+        self,
+        faq_service: FaqService,
+        embeddings: EmbeddingService,
+        similarity_threshold: float,
+    ) -> None:
         self._faq_service = faq_service
+        self._embeddings = embeddings
+        self._similarity_threshold = similarity_threshold
 
     async def record(self, session: AsyncSession, question: str) -> tuple[UnansweredOut, bool]:
         normalized = normalize_question(question)
         if not normalized:
             raise ValueError("question must not be empty")
 
-        existing = await self._find_open(session, normalized)
         now = datetime.now(UTC)
-
+        existing = await self._find_open_by_normalized(session, normalized)
         if existing is not None:
-            return await self._increment(session, existing, now), False
+            vector = None
+            if existing.embedding is None:
+                vector = await self._embeddings.embed_query(question.strip())
+            return await self._increment(session, existing, now, vector=vector), False
+
+        vector = await self._embeddings.embed_query(question.strip())
+        near = await self._find_open_near(session, vector)
+        if near is not None:
+            return await self._increment(session, near, now, vector=vector), False
 
         row = UnansweredQuestion(
             question=question.strip(),
@@ -43,6 +58,7 @@ class UnansweredService:
             first_asked_at=now,
             last_asked_at=now,
             status="open",
+            embedding=vector,
         )
         session.add(row)
         try:
@@ -50,18 +66,38 @@ class UnansweredService:
         except IntegrityError:
             # Another request inserted the same open question concurrently.
             await session.rollback()
-            existing = await self._find_open(session, normalized)
+            existing = await self._find_open_by_normalized(session, normalized)
             if existing is None:
                 raise
-            return await self._increment(session, existing, datetime.now(UTC)), False
+            return await self._increment(session, existing, datetime.now(UTC), vector=vector), False
 
         await session.refresh(row)
         return UnansweredOut.model_validate(row), True
 
-    async def _find_open(self, session: AsyncSession, normalized: str) -> UnansweredQuestion | None:
+    async def _find_open_by_normalized(
+        self,
+        session: AsyncSession,
+        normalized: str,
+    ) -> UnansweredQuestion | None:
         stmt = select(UnansweredQuestion).where(
             UnansweredQuestion.normalized_text == normalized,
             UnansweredQuestion.status == "open",
+        )
+        return await session.scalar(stmt)
+
+    async def _find_open_near(
+        self,
+        session: AsyncSession,
+        vector: list[float],
+    ) -> UnansweredQuestion | None:
+        distance = UnansweredQuestion.embedding.cosine_distance(vector)
+        stmt = (
+            select(UnansweredQuestion)
+            .where(UnansweredQuestion.status == "open")
+            .where(UnansweredQuestion.embedding.is_not(None))
+            .where(distance < (1 - self._similarity_threshold))
+            .order_by(distance.asc())
+            .limit(1)
         )
         return await session.scalar(stmt)
 
@@ -70,9 +106,13 @@ class UnansweredService:
         session: AsyncSession,
         row: UnansweredQuestion,
         now: datetime,
+        *,
+        vector: list[float] | None = None,
     ) -> UnansweredOut:
         row.frequency += 1
         row.last_asked_at = now
+        if vector is not None and row.embedding is None:
+            row.embedding = vector
         await session.commit()
         await session.refresh(row)
         return UnansweredOut.model_validate(row)

@@ -37,7 +37,11 @@ def create_app() -> FastAPI:
     session_factory = create_session_factory(engine)
     embedding_service = EmbeddingService(settings.embedding_model)
     faq_service = FaqService(embedding_service, settings.faq_search_threshold)
-    unanswered_service = UnansweredService(faq_service)
+    unanswered_service = UnansweredService(
+        faq_service,
+        embedding_service,
+        settings.unanswered_similarity_threshold,
+    )
     voice_service = VoiceService(settings.tts_api_key)
 
     @asynccontextmanager

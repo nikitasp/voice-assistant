@@ -56,11 +56,24 @@ async def test_case_whitespace_and_punctuation_variants_are_grouped(client):
 
 
 async def test_different_questions_are_separate(client):
-    first = await record(client, unique_question())
-    second = await record(client, unique_question())
+    token = uuid4().hex[:8]
+    first = await record(client, f"Is laundry available on property {token}?")
+    second = await record(client, f"Does the resort have a helipad {token}?")
 
     assert first["id"] != second["id"]
     assert second["frequency"] == 1
+
+
+async def test_semantic_paraphrases_are_grouped(client):
+    token = uuid4().hex[:8]
+    first = await record(client, f"Can I bring my dog to the hotel during stay {token}?")
+    second = await record(
+        client,
+        f"Is it allowed to bring a dog when staying at the hotel {token}?",
+    )
+
+    assert second["id"] == first["id"]
+    assert second["frequency"] == 2
 
 
 @pytest.mark.parametrize(
