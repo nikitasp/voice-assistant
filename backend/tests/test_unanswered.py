@@ -63,7 +63,10 @@ async def test_different_questions_are_separate(client):
     assert second["frequency"] == 1
 
 
-@pytest.mark.parametrize("payload", [{}, {"question": ""}, {"question": "   "}])
+@pytest.mark.parametrize(
+    "payload",
+    [{}, {"question": ""}, {"question": "   "}, {"question": "???"}, {"question": "..."}],
+)
 async def test_empty_question_is_rejected(client, payload):
     response = await client.post("/api/unanswered", json=payload)
 

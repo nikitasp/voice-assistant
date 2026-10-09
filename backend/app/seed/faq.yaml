@@ -1,0 +1,347 @@
+items:
+  # --- General Information ---
+  - slug: property-location
+    category: general
+    question: What is The Meridian Casino & Resort and where is it located?
+    answer: >
+      The Meridian Casino & Resort is a luxury destination on the Las Vegas Strip, Nevada.
+      Guests can enjoy casino gaming, hotel accommodations, dining, entertainment, and amenities
+      all on one property.
+
+  - slug: casino-hours
+    category: general
+    question: What are the casino hours?
+    answer: >
+      The casino is open 24 hours a day, 7 days a week.
+
+  - slug: check-in
+    category: general
+    question: When can I check in and get into my room?
+    answer: >
+      Hotel check-in begins at 4:00 PM. Early check-in is subject to availability.
+
+  - slug: check-out
+    category: general
+    question: What time do I have to leave my room on the last day? When is check-out?
+    answer: >
+      Hotel check-out is at 11:00 AM. Late checkout is available for suite guests.
+
+  - slug: valet-parking
+    category: general
+    question: How much does it cost to have someone park my car? Do you offer valet parking?
+    answer: >
+      Valet parking is complimentary for hotel guests and $25 for visitors.
+
+  - slug: self-parking
+    category: general
+    question: Is self parking available?
+    answer: >
+      Self parking is free for all guests.
+
+  - slug: dress-code
+    category: general
+    question: What is the dress code? Do I need a jacket or formal attire?
+    answer: >
+      Smart casual attire is expected throughout the property. Formal attire is required at
+      Aurelia restaurant and Eclipse Lounge. A jacket may be appropriate for those venues.
+
+  - slug: age-requirement
+    category: general
+    question: Can my teenage son come with me to the casino floor? What is the age requirement?
+    answer: >
+      Guests must be 21+ for the casino floor and bars. All ages are welcome in the hotel
+      and family restaurants.
+
+  - slug: wifi
+    category: general
+    question: Is the internet free? Do you have Wi-Fi?
+    answer: >
+      Complimentary Wi-Fi is available throughout the property. Premium high-speed internet
+      is available in suites.
+
+  # --- Casino Gaming ---
+  - slug: slot-machines
+    category: casino-gaming
+    question: Tell me about your slot machines.
+    answer: >
+      We have over 2,000 slot machines ranging from $0.01 to $1,000 per spin, including the
+      latest video slots, classic reels, and progressive jackpots. The largest jackpot is
+      currently at $4.2 million.
+
+  - slug: blackjack
+    category: casino-gaming
+    question: Do you have blackjack tables?
+    answer: >
+      We offer 40 blackjack tables with minimums from $25 to $10,000. Single deck, 6-deck,
+      and Spanish 21 are available.
+
+  - slug: poker-room
+    category: casino-gaming
+    question: Is the poker room open right now? Tell me about poker tournaments.
+    answer: >
+      Our poker room operates 24/7 with Texas Hold'em (No Limit and Limit), Omaha, and
+      Seven Card Stud. Daily tournaments are held at 11 AM and 7 PM with a $200 buy-in.
+
+  - slug: roulette
+    category: casino-gaming
+    question: Do you have roulette?
+    answer: >
+      We have 12 roulette tables including American, European, and French roulette.
+      Minimums start from $15.
+
+  - slug: baccarat
+    category: casino-gaming
+    question: Where can I play baccarat?
+    answer: >
+      Baccarat is available at 8 tables in the main casino, plus a private high-limit salon
+      with 4 tables. Minimums start from $50, with high-limit play from $5,000.
+
+  - slug: craps
+    category: casino-gaming
+    question: Do you have craps tables and lessons?
+    answer: >
+      We have 6 craps tables with minimums from $15. Lessons are available daily at 10 AM.
+
+  - slug: sports-book
+    category: casino-gaming
+    question: Where can I watch the football game or place sports bets?
+    answer: >
+      Our Sports Book features an 80-seat theater with a 40-foot screen and full bar service.
+      Mobile betting is available throughout the property via the Meridian app — perfect for
+      watching football and other sports.
+
+  - slug: high-limit-salon
+    category: casino-gaming
+    question: Tell me about the high limit salon.
+    answer: >
+      The High Limit Salon is a private gaming area with dedicated hosts. Access is by
+      invitation or a $50,000 credit line. Guests enjoy private restrooms, complimentary
+      dining, and personal butler service.
+
+  - slug: players-club
+    category: casino-gaming
+    question: How do I earn points when I gamble? Tell me about the players club.
+    answer: >
+      Join the Meridian Rewards Players Club to earn points on all play. Tiers include Gold,
+      Platinum, Diamond, and invite-only Black.
+
+  # --- Accommodations ---
+  - slug: deluxe-room
+    category: accommodations
+    question: Tell me about the Deluxe Room rates and features.
+    answer: >
+      The Deluxe Room is 450 sq ft with a king or two queens and a city or pool view.
+      Rates start from $299 per night.
+
+  - slug: premier-room
+    category: accommodations
+    question: Tell me about the Premier Room.
+    answer: >
+      The Premier Room is 550 sq ft with a king bed, sitting area, and Strip view.
+      Rates start from $449 per night.
+
+  - slug: luxury-suite
+    category: accommodations
+    question: Tell me about the Luxury Suite.
+    answer: >
+      The Luxury Suite is 900 sq ft with a separate living room and a marble bathroom with
+      soaking tub. Rates start from $799 per night.
+
+  - slug: penthouse-suite
+    category: accommodations
+    question: Tell me about the Penthouse Suite.
+    answer: >
+      The Penthouse Suite is 1,800 sq ft with two bedrooms, a dining room, butler's pantry,
+      and private terrace. Rates start from $2,500 per night.
+
+  - slug: chairmans-villa
+    category: accommodations
+    question: Tell me about the Chairman's Villa.
+    answer: >
+      The Chairman's Villa is 4,500 sq ft with three bedrooms, a private pool, personal chef
+      availability, and 24-hour butler service. Available by inquiry only.
+
+  - slug: accessible-rooms
+    category: accommodations
+    question: Do you have rooms for wheelchair users? Are accessible rooms available?
+    answer: >
+      Accessible rooms are available in all categories, featuring roll-in showers, lowered
+      amenities, and visual alerts. Please request accessibility features at booking.
+
+  # --- Restaurants ---
+  - slug: aurelia
+    category: restaurants
+    question: What's your best restaurant?
+    answer: >
+      Our best restaurant is Aurelia, the signature fine dining room at Meridian. It features
+      modern French cuisine by Chef Marcus Webb with 2 Michelin stars. The tasting menu is
+      $285 per person, with à la carte also available. Dinner only from 6 PM to 10 PM.
+      Reservations and formal attire are required — a jacket is expected for dinner at this
+      French restaurant.
+
+  - slug: silk-road
+    category: restaurants
+    question: Is there somewhere to eat sushi? Tell me about Silk Road.
+    answer: >
+      Silk Road offers Pan-Asian cuisine with a sushi bar, robata grill, and dim sum.
+      Open 11 AM to 11 PM daily. Reservations are recommended for dinner. Smart casual attire.
+      Prices are typically $40-80 per person.
+
+  - slug: the-steakhouse
+    category: restaurants
+    question: Tell me about The Steakhouse.
+    answer: >
+      The Steakhouse is a classic American steakhouse serving dry-aged beef and fresh seafood.
+      Open 5 PM to 11 PM. Reservations recommended. Smart casual. Prices $70-150 per person.
+
+  - slug: cafe-meridian
+    category: restaurants
+    question: Tell me about Café Meridian breakfast buffet.
+    answer: >
+      Café Meridian is casual all-day dining. The breakfast buffet runs 7-11 AM for $45.
+      Lunch and dinner menus are served until midnight. No reservations needed.
+
+  - slug: pool-bar-grill
+    category: restaurants
+    question: Tell me about the Pool Bar & Grill.
+    answer: >
+      The Pool Bar & Grill offers poolside casual dining with burgers, salads, and cocktails.
+      Open 10 AM to 6 PM seasonally. Hotel guests only.
+
+  # --- Bars & Lounges ---
+  - slug: eclipse-lounge
+    category: bars-lounges
+    question: Where can I propose with romantic Strip views at Eclipse Lounge?
+    answer: >
+      Eclipse Lounge is a rooftop bar with stunning Strip views, craft cocktails, and a
+      champagne menu. Open 5 PM to 2 AM. Formal attire after 8 PM. Private terrace
+      reservations make it ideal for a romantic proposal or special celebration.
+
+  - slug: the-vault
+    category: bars-lounges
+    question: Where can I smoke a cigar and have a whiskey?
+    answer: >
+      The Vault is our whiskey and cigar lounge with over 400 whiskey selections and a
+      humidor of premium cigars. Open 4 PM to 2 AM. Guests must be 21+.
+
+  - slug: casino-floor-bars
+    category: bars-lounges
+    question: Are there bars on the casino floor?
+    answer: >
+      There are 6 bars throughout the casino floor. Complimentary drinks are available for
+      active players, with full service for all guests.
+
+  # --- Entertainment & Amenities ---
+  - slug: meridian-spa
+    category: entertainment-amenities
+    question: Where can I get a massage? Tell me about Meridian Spa.
+    answer: >
+      Meridian Spa is a full-service spa and salon offering massage, facials, and body
+      treatments. Couples suites are available. Open 8 AM to 8 PM. Booking 24 hours in
+      advance is recommended.
+
+  - slug: fitness-center
+    category: entertainment-amenities
+    question: Can I work out at five in the morning? Tell me about the fitness center.
+    answer: >
+      The Fitness Center offers 24-hour access for hotel guests, so you can work out early
+      in the morning. Personal training is available, along with Peloton bikes, free weights,
+      and a yoga studio.
+
+  - slug: pool-complex
+    category: entertainment-amenities
+    question: Tell me about the pool complex and cabanas.
+    answer: >
+      Our Pool Complex has three pools including an adults-only infinity pool. Cabanas start
+      from $300 per day and include a $100 food credit. Open 8 AM to 8 PM.
+
+  - slug: meridian-theater
+    category: entertainment-amenities
+    question: Tell me about Meridian Theater shows.
+    answer: >
+      Meridian Theater is a 1,200-seat venue featuring residencies by internationally
+      acclaimed artists. Check the website for the current schedule. Tickets start from $95,
+      with VIP packages available.
+
+  - slug: nova-nightclub
+    category: entertainment-amenities
+    question: Is there a place to go dancing on Saturday night? Tell me about NOVA nightclub.
+    answer: >
+      NOVA is our premier nightclub, open Friday and Saturday from 10:30 PM to 4 AM — ideal
+      for dancing on Saturday night. Cover is $50 general admission, with tables from $2,000.
+      Guest list is available for hotel guests.
+
+  # --- Celebrations & Special Events ---
+  - slug: weddings
+    category: celebrations-events
+    question: We're getting married. What wedding packages do you have?
+    answer: >
+      We host weddings in multiple venues from an intimate chapel to a grand ballroom.
+      Packages range from $5,000 to $150,000, and a wedding coordinator is included in all
+      packages.
+
+  - slug: private-events
+    category: celebrations-events
+    question: Can you host private events or meetings?
+    answer: >
+      Meeting rooms and ballrooms range from 500 to 15,000 sq ft with full catering and AV
+      services. Corporate rates are available.
+
+  - slug: birthday-anniversary
+    category: celebrations-events
+    question: I want to propose to my girlfriend this weekend. Can you help with birthday or anniversary celebrations?
+    answer: >
+      How exciting! Celebration packages for birthdays, anniversaries, and proposals start
+      from $500 and include a room upgrade, champagne, custom cake, and dinner credit.
+      A 72-hour advance notice is required. We can help you plan a memorable proposal weekend.
+
+  - slug: bachelor-bachelorette
+    category: celebrations-events
+    question: Do you have bachelor or bachelorette packages?
+    answer: >
+      VIP bachelor and bachelorette packages include a suite, nightclub table, pool cabana,
+      and spa credits, starting at $3,000. Book at least 1 week in advance.
+
+  # --- Partner Discounts ---
+  - slug: partner-carbone
+    category: partner-discounts
+    question: Are there any good restaurants nearby you'd recommend?
+    answer: >
+      For nearby off-property dining, Carbone is an Italian restaurant about 5 minutes away.
+      Meridian guests receive 15% off food and priority reservations when you show your room key.
+      We can also suggest our on-property restaurants if you prefer to stay in.
+
+  - slug: partner-omega-mart
+    category: partner-discounts
+    question: Do you have a discount for Omega Mart?
+    answer: >
+      Meridian guests receive $10 off admission to Omega Mart, an immersive art experience.
+      Show your room key.
+
+  - slug: partner-helicopter-tours
+    category: partner-discounts
+    question: Do you offer helicopter tour discounts?
+    answer: >
+      Vegas Nights Aviation helicopter tours offer Meridian guests 20% off Strip tours plus
+      complimentary champagne. Show your room key.
+
+  - slug: partner-topgolf
+    category: partner-discounts
+    question: Do I get a deal at Topgolf?
+    answer: >
+      Yes — at Topgolf Las Vegas, Meridian guests receive a free hour with a 2-hour booking
+      when you show your room key.
+
+  - slug: partner-spa-aquae
+    category: partner-discounts
+    question: What if Meridian Spa is fully booked?
+    answer: >
+      When Meridian Spa is fully booked, guests can visit Spa Aquae at JW Marriott for
+      10% off treatments with a room key.
+
+  - slug: partner-fremont-street
+    category: partner-discounts
+    question: Do you have a Fremont Street Experience discount?
+    answer: >
+      Meridian guests receive a VIP SlotZilla pass for the Fremont Street Experience and can
+      skip the line. Show your room key.
