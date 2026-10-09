@@ -8,9 +8,9 @@ Browser (web/) ──HTTP──► Backend (FastAPI) ──SQL──► Postgres
        └──LiveKit WebRTC──► Agent worker ──HTTP──┘
 ```
 
-- **Backend** owns the database, FAQ search, unanswered queue, voice settings, and LiveKit token minting.
+- **Backend** (FastAPI / Python 3.12) owns the database, FAQ search, unanswered queue, voice settings, and LiveKit token minting. Communication with the agent and web app is JSON over HTTP.
 - **Agent** is a LiveKit Agents worker. It never talks to Postgres; knowledge-base access is only via backend HTTP tools (`search_faq`, `record_unanswered`).
-- **Web** is one React app: guest playground plus admin pages (FAQ, unanswered queue, voices, integrated test playground). Nginx proxies `/api/` to the backend so the browser stays same-origin.
+- **Web** is one React app (Vite + TypeScript): guest playground plus admin pages (FAQ, unanswered queue, voices, integrated test playground). Nginx proxies `/api/` to the backend so the browser stays same-origin. There is no separate `admin/` package — bonus UI lives under `web/src/features/`.
 
 ## Database and search
 

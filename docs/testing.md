@@ -6,7 +6,7 @@ Acceptance tests are written before the implementation. They fail until the code
 
 | Suite | Location | Needs | What it checks |
 | --- | --- | --- | --- |
-| Backend API | `backend/tests/` | Postgres + pgvector (`TEST_DATABASE_URL`) | Seeding, FAQ search, unanswered questions, LiveKit tokens |
+| Backend API | `backend/tests/` | Postgres + pgvector (`TEST_DATABASE_URL`) | Seeding, FAQ search/CRUD, unanswered record/queue, voices, LiveKit tokens |
 | Agent behaviour | `agent/tests/test_concierge_behaviour.py` | `LLM_API_KEY` | Concierge replies in text mode with mocked knowledge-base tools |
 | Agent end-to-end (`e2e`) | `agent/tests/test_scenarios_e2e.py`, `test_ask_cli.py` | `LLM_API_KEY` + running, seeded backend (`BACKEND_URL`) | PRD example conversations and the `concierge.ask` CLI |
 
@@ -51,6 +51,12 @@ These are the names and shapes the tests rely on.
 - `GET /health` → `200`.
 - `POST /api/faq/search` `{ "query": str }` → `{ "found": bool, "results": [{ "id", "slug", "question", "answer", "score": float }] }`, sorted by score descending; `results` is `[]` when `found` is false. Empty query → `422`.
 - `POST /api/unanswered` `{ "question": str }` → `200`/`201` with `{ "id", "question", "frequency", "first_asked_at", "last_asked_at", "status" }`. Timestamps are ISO 8601 with time zone. Questions differing only in case, surrounding whitespace or trailing punctuation are the same record. Semantically near-identical paraphrases of an open question also increment that record. Empty question → `422`.
+- `GET /api/faq` → list of FAQ items; optional `category` and `q` filters.
+- `POST /api/faq` / `PUT /api/faq/{id}` / `DELETE /api/faq/{id}` → CRUD; create/update recompute embeddings so search reflects changes immediately.
+- `GET /api/unanswered?status=open` → open queue sorted by frequency desc, then `last_asked_at` desc.
+- `POST /api/unanswered/{id}/convert` `{ category, question, answer, slug? }` → creates FAQ, status `converted`.
+- `POST /api/unanswered/{id}/dismiss` → status `dismissed`.
+- `GET /api/voices` → four seeded voices with `active` flag; `PUT /api/voices/active` `{ "voice_id" }`; `GET /api/voices/{id}/preview` → WAV audio on success (cached only after a successful TTS generate); `503` when TTS is unavailable (failure is not cached).
 - `POST /api/livekit/token` `{}` → `{ "token", "url", "room" }`; a new room per call; `url` is `LIVEKIT_PUBLIC_URL`.
 
 ### Agent
@@ -58,7 +64,7 @@ These are the names and shapes the tests rely on.
 - `concierge.assistant.Concierge` — `Agent` subclass, constructed with no arguments, with function tools `search_faq(query)` and `record_unanswered(question)`. It does not speak in `on_enter`; the greeting is triggered by the worker entrypoint.
 - `concierge.models.build_llm()` returns the configured `llm.LLM`.
 - The backend URL comes from the `BACKEND_URL` environment variable.
-- `python -m concierge.ask "question"` and `python -m concierge.ask --file path` print, for each question, the question, the tool calls and the reply; exit code `0`.
+- `python -m concierge.ask "question"` and `python -m concierge.ask --file path` print, for each question, the question, the tool calls (name and arguments) and the reply; exit code `0`.
 
 ## Requirement coverage
 
@@ -81,5 +87,8 @@ These are the names and shapes the tests rely on.
 | TC-4 text-only session | every agent test (`session` fixture) |
 | TC-5 CLI | `test_ask_cli.py` |
 | Agent robustness (task 07) | `test_backend_failure_gives_polite_fallback` |
+| AP-1–AP-4 FAQ management | `test_faq_crud.py` |
+| AP-5–AP-8 unanswered queue | `test_unanswered_queue.py` |
+| VX-1, VX-3, NF-5 voices | `test_voices.py` |
 
-Not covered by automated tests yet: PG-2–PG-4 and TC-1–TC-2 (browser UI), and all bonus requirements (AP-*, VX-*).
+Not covered by automated tests yet: PG-2–PG-4 and TC-1–TC-2 (browser UI), and admin UI wiring (AP-9–AP-16) beyond the HTTP contracts above.

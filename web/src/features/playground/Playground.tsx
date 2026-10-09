@@ -65,6 +65,7 @@ export function Playground({ testMode = false }: Props) {
 
   async function startSession() {
     setError(null);
+    setLines([]);
     setStatus("connecting");
     try {
       const { token, url } = await api.createToken();

@@ -1,9 +1,5 @@
 from __future__ import annotations
 
-import struct
-import wave
-from io import BytesIO
-
 import httpx
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -44,16 +40,8 @@ PREVIEW_TEXT = (
 )
 
 
-def silent_wav(duration_ms: int = 300, sample_rate: int = 16000) -> bytes:
-    frame_count = int(sample_rate * duration_ms / 1000)
-    buffer = BytesIO()
-    with wave.open(buffer, "wb") as wav:
-        wav.setnchannels(1)
-        wav.setsampwidth(2)
-        wav.setframerate(sample_rate)
-        silence = struct.pack("<h", 0) * frame_count
-        wav.writeframes(silence)
-    return buffer.getvalue()
+class VoicePreviewError(RuntimeError):
+    """Preview generation failed; callers must not cache a fallback."""
 
 
 class VoiceService:
@@ -99,6 +87,7 @@ class VoiceService:
         if voice.preview_audio:
             return voice.preview_audio, "audio/wav"
 
+        # Only cache successful speech. Failures must not poison the cache.
         audio, media_type = await self._generate_preview(voice.provider_voice_id)
         voice.preview_audio = audio
         await session.commit()
@@ -106,7 +95,7 @@ class VoiceService:
 
     async def _generate_preview(self, provider_voice_id: str) -> tuple[bytes, str]:
         if not self._tts_api_key:
-            return silent_wav(), "audio/wav"
+            raise VoicePreviewError("TTS_API_KEY is not configured")
 
         async with httpx.AsyncClient(timeout=30.0) as client:
             response = await client.post(
@@ -131,5 +120,9 @@ class VoiceService:
                 },
             )
             if response.status_code >= 400:
-                return silent_wav(), "audio/wav"
+                raise VoicePreviewError(
+                    f"TTS preview failed with status {response.status_code}"
+                )
+            if not response.content.startswith(b"RIFF"):
+                raise VoicePreviewError("TTS preview returned non-WAV audio")
             return response.content, "audio/wav"

@@ -27,8 +27,15 @@ def _assistant_text(result: RunResult) -> str:
     ).strip()
 
 
-def _tool_names(result: RunResult) -> list[str]:
-    return [event.item.name for event in result.events if isinstance(event, FunctionCallEvent)]
+def _format_tool_calls(result: RunResult) -> list[str]:
+    lines: list[str] = []
+    for event in result.events:
+        if not isinstance(event, FunctionCallEvent):
+            continue
+        name = event.item.name
+        arguments = event.item.arguments or ""
+        lines.append(f"{name}({arguments})" if arguments else name)
+    return lines
 
 
 def _load_questions(args: argparse.Namespace) -> list[str]:
@@ -47,8 +54,8 @@ async def _ask(question: str) -> None:
             result = await session.run(user_input=question)
 
     print(question)
-    for name in _tool_names(result):
-        print(name)
+    for line in _format_tool_calls(result):
+        print(line)
     reply = _assistant_text(result)
     if reply:
         print(reply)

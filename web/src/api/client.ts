@@ -31,8 +31,15 @@ export type LiveKitToken = {
   room: string;
 };
 
+/** Empty = same-origin (nginx/Vite proxy). Set VITE_API_BASE_URL to hit the API directly. */
+const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
+
+function apiUrl(path: string): string {
+  return `${API_BASE}${path}`;
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(path, {
+  const response = await fetch(apiUrl(path), {
     ...init,
     headers: {
       "Content-Type": "application/json",
@@ -84,5 +91,5 @@ export const api = {
       method: "PUT",
       body: JSON.stringify({ voice_id }),
     }),
-  previewVoiceUrl: (id: string) => `/api/voices/${id}/preview`,
+  previewVoiceUrl: (id: string) => apiUrl(`/api/voices/${id}/preview`),
 };

@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Response, status
 
 from app.api.deps import SessionDep, VoiceServiceDep
 from app.schemas.voices import ActiveVoiceRequest, VoiceOut
+from app.services.voices import VoicePreviewError
 
 router = APIRouter(prefix="/api/voices", tags=["voices"])
 
@@ -33,4 +34,9 @@ async def preview_voice(
         audio, media_type = await voice_service.get_preview_audio(session, voice_id)
     except LookupError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except VoicePreviewError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=str(exc),
+        ) from exc
     return Response(content=audio, media_type=media_type)
