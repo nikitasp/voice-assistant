@@ -9,6 +9,10 @@ class Settings(BaseSettings):
     livekit_api_key: str | None = None
     livekit_api_secret: str | None = None
     llm_api_key: str | None = None
+    # OpenAI-compatible endpoint (omit for api.openai.com). Examples:
+    #   Groq:   https://api.groq.com/openai/v1
+    #   Ollama: http://host.docker.internal:11434/v1  (agent in Docker)
+    llm_base_url: str | None = None
     stt_api_key: str | None = None
     tts_api_key: str | None = None
     llm_model: str = "gpt-4.1-mini"

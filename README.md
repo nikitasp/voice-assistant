@@ -35,6 +35,8 @@ cp .env.example .env
 | `LIVEKIT_API_KEY` / `LIVEKIT_API_SECRET` | Backend, agent | Token minting and worker auth |
 | `BACKEND_URL` | Agent (local / tests) | Compose sets `http://backend:8000` for the agent container |
 | `LLM_API_KEY` | Agent, backend (optional) | OpenAI-compatible chat model |
+| `LLM_BASE_URL` | Agent | Optional; omit for OpenAI. Use Groq / Ollama / other OpenAI-compatible APIs |
+| `LLM_MODEL` | Agent | Chat model id (default `gpt-4.1-mini`; set a Groq/Ollama model when using those) |
 | `STT_API_KEY` | Agent | Deepgram |
 | `TTS_API_KEY` | Agent, backend previews | Cartesia |
 | `DATABASE_URL` | Backend | Compose overrides host to `db` inside the stack |

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import {
+  ConnectionState,
   Room,
   RoomEvent,
   Track,
@@ -80,7 +81,7 @@ export function Playground({ testMode = false }: Props) {
 
       room.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
         const agentSpeaking = speakers.some((p) => !p.isLocal);
-        if (room.state === Room.State.Connected) {
+        if (room.state === ConnectionState.Connected) {
           setStatus(agentSpeaking ? "speaking" : "listening");
         }
       });

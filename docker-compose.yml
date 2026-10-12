@@ -63,6 +63,8 @@ services:
       LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
       LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET}
       LLM_API_KEY: ${LLM_API_KEY:?set LLM_API_KEY in .env}
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
+      LLM_MODEL: ${LLM_MODEL:-gpt-4.1-mini}
       STT_API_KEY: ${STT_API_KEY:?set STT_API_KEY in .env}
       TTS_API_KEY: ${TTS_API_KEY:?set TTS_API_KEY in .env}
     extra_hosts:

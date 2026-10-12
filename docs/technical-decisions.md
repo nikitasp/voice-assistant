@@ -28,7 +28,7 @@ Browser (web/) ──HTTP──► Backend (FastAPI) ──SQL──► Postgres
 ## Voice stack
 
 - **LiveKit** for realtime rooms (Cloud by default; optional local server via Compose profile `local-livekit`).
-- **LLM**: OpenAI-compatible chat model via LiveKit's OpenAI plugin (`LLM_API_KEY`).
+- **LLM**: OpenAI-compatible chat model via LiveKit's OpenAI plugin (`LLM_API_KEY`, optional `LLM_BASE_URL` / `LLM_MODEL`). Defaults to OpenAI; for unpaid local/dev use point `LLM_BASE_URL` at Groq or Ollama.
 - **STT**: Deepgram (`STT_API_KEY`).
 - **TTS**: Cartesia (`TTS_API_KEY`), with four PRD voices mapped to Cartesia voice IDs. The active voice is stored in `app_settings` and read by the agent at session start (NF-5). Backend voice previews use `TTS_MODEL` (default `sonic-3`); Cartesia has no TTS model-list API, so the model is configured explicitly.
 - **Health probes**: `GET /api/health/providers` validates OpenAI/Deepgram/Cartesia API keys (token-only) for the admin Health page. Speech generation is checked separately via voice preview. `STT_API_KEY` / `LLM_API_KEY` are available to the backend for those probes; the agent remains the runtime LLM/STT consumer.
