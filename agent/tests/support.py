@@ -51,12 +51,17 @@ def search_returning(*items: dict) -> Callable[[str], dict]:
 
 
 class UnansweredRecorder:
-    """Mock for the record_unanswered tool that remembers what was recorded."""
+    """Mock for the record_unanswered tool that remembers what was recorded.
+
+    Signature must match the real tool (context, question) so livekit's mock_tools
+    bind can pass the question through — a single `question` param would swallow
+    RunContext instead.
+    """
 
     def __init__(self) -> None:
         self.questions: list[str] = []
 
-    def __call__(self, question: str) -> str:
+    def __call__(self, context: Any = None, question: str = "") -> str:
         self.questions.append(question)
         return "The question has been recorded for the concierge team."
 

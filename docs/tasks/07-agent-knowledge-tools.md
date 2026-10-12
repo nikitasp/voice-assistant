@@ -12,7 +12,7 @@ Make the agent answer from the knowledge base and record what it cannot answer.
 - LLM function tools in the agent:
   - `search_faq(query)` → calls `POST /api/faq/search`.
   - `record_unanswered(question)` → calls `POST /api/unanswered`.
-- Instructions: always search before answering property questions; answer only from returned facts; when nothing is found, call `record_unanswered`, apologize, and confirm the question has been noted (PRD Scenario 3).
+- Instructions: always search before answering informational questions (including off-topic); answer only from returned facts; when nothing is found, call `record_unanswered`, apologize or politely decline, and confirm the question has been noted (PRD Scenario 3).
 - Handle backend errors and timeouts gracefully (spoken fallback, no crash).
 - Backend URL configurable via environment.
 

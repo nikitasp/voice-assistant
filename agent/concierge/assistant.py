@@ -19,8 +19,9 @@ class Concierge(Agent):
     async def search_faq(self, context: RunContext, query: str) -> dict[str, Any]:
         """Search the Meridian property knowledge base for an answer.
 
-        Always call this before answering questions about the property, amenities,
-        dining, gaming, rooms, events, or partner offers.
+        Call this before answering any guest question that seeks information or a
+        yes/no answer, including odd or off-topic questions. Skip only for
+        greetings, thanks, and small talk.
 
         Args:
             query: The guest's question or a concise search phrase.
@@ -31,7 +32,8 @@ class Concierge(Agent):
     async def record_unanswered(self, context: RunContext, question: str) -> str:
         """Record a guest question that the knowledge base could not answer.
 
-        Call this after search_faq returns no useful match.
+        Always call this after search_faq returns no useful match — including when
+        the question is off-topic — before apologizing or declining.
 
         Args:
             question: The guest's original question.

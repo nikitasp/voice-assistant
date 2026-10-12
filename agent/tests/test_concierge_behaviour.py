@@ -73,6 +73,8 @@ async def test_answer_includes_relevant_details(session, model):
     [
         ("Can I bring my dog to the hotel?", "dog"),
         ("Is there a shuttle to the airport?", "shuttle"),
+        ("Do you have cookies?", "cookie"),
+        ("Can I turn to the dark side?", "dark"),
     ],
 )
 async def test_unknown_question_is_recorded_and_apologized(session, model, question, topic):
@@ -92,8 +94,8 @@ async def test_unknown_question_is_recorded_and_apologized(session, model, quest
     await result.expect.contains_message(role="assistant").judge(
         model,
         intent=(
-            "Politely says it does not have this information, confirms the question has been noted "
-            "for the team, and does not make up an answer."
+            "Politely says it does not have this information or declines the request, "
+            "confirms the question has been noted for the team, and does not make up an answer."
         ),
     )
     assert_speakable(result)

@@ -27,6 +27,9 @@ export function Playground({ testMode = false }: Props) {
   const [lines, setLines] = useState<TranscriptLine[]>([]);
   const roomRef = useRef<Room | null>(null);
   const audioEl = useRef<HTMLAudioElement | null>(null);
+  const agentSpeakingRef = useRef(false);
+  const micReadyRef = useRef(false);
+  const unmuteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const statusLabel = useMemo(() => {
     switch (status) {
@@ -64,13 +67,37 @@ export function Playground({ testMode = false }: Props) {
     });
   }
 
+  async function setMicEnabled(room: Room, enabled: boolean) {
+    if (room.state !== ConnectionState.Connected) return;
+    if (room.localParticipant.isMicrophoneEnabled === enabled) return;
+    try {
+      await room.localParticipant.setMicrophoneEnabled(enabled);
+    } catch {
+      // Ignore mic races during disconnect.
+    }
+  }
+
   async function startSession() {
     setError(null);
     setLines([]);
     setStatus("connecting");
+    agentSpeakingRef.current = false;
+    micReadyRef.current = false;
+    if (unmuteTimerRef.current) {
+      clearTimeout(unmuteTimerRef.current);
+      unmuteTimerRef.current = null;
+    }
     try {
       const { token, url } = await api.createToken();
-      const room = new Room({ adaptiveStream: true, dynacast: true });
+      const room = new Room({
+        adaptiveStream: true,
+        dynacast: true,
+        audioCaptureDefaults: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
       roomRef.current = room;
 
       room.on(RoomEvent.TrackSubscribed, (track) => {
@@ -79,29 +106,65 @@ export function Playground({ testMode = false }: Props) {
         }
       });
 
+      // Half-duplex: mute the mic while the agent speaks so TTS on open speakers
+      // cannot be transcribed as guest speech. Voice barge-in is unavailable;
+      // typed messages still work. Unmute is delayed slightly to drop trailing echo.
       room.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
+        if (room.state !== ConnectionState.Connected) return;
         const agentSpeaking = speakers.some((p) => !p.isLocal);
-        if (room.state === ConnectionState.Connected) {
-          setStatus(agentSpeaking ? "speaking" : "listening");
+        agentSpeakingRef.current = agentSpeaking;
+        if (agentSpeaking) {
+          micReadyRef.current = true;
+          if (unmuteTimerRef.current) {
+            clearTimeout(unmuteTimerRef.current);
+            unmuteTimerRef.current = null;
+          }
+          setStatus("speaking");
+          void setMicEnabled(room, false);
+          return;
         }
+        setStatus("listening");
+        if (!micReadyRef.current) return;
+        if (unmuteTimerRef.current) clearTimeout(unmuteTimerRef.current);
+        unmuteTimerRef.current = setTimeout(() => {
+          unmuteTimerRef.current = null;
+          if (!agentSpeakingRef.current) {
+            void setMicEnabled(room, true);
+          }
+        }, 450);
       });
 
       room.on(RoomEvent.TranscriptionReceived, (segments: TranscriptionSegment[], participant) => {
         const text = segments.map((s) => s.text).join(" ").trim();
         if (!text) return;
         const role = participant?.isLocal ? "guest" : "agent";
+        // Drop guest finals that arrive while TTS is playing (echo leftovers).
+        if (role === "guest" && agentSpeakingRef.current) return;
         const id = segments.map((s) => s.id).join("-") || undefined;
         appendLine(role, text, id);
       });
 
       room.on(RoomEvent.Disconnected, () => {
+        if (unmuteTimerRef.current) {
+          clearTimeout(unmuteTimerRef.current);
+          unmuteTimerRef.current = null;
+        }
         setStatus("idle");
         roomRef.current = null;
       });
 
       await room.connect(url, token);
-      await room.localParticipant.setMicrophoneEnabled(true);
+      // Keep mic off through the greeting; enable after the agent finishes speaking.
+      await setMicEnabled(room, false);
       setStatus("listening");
+      // Fallback if ActiveSpeakersChanged never fires for the agent.
+      unmuteTimerRef.current = setTimeout(() => {
+        unmuteTimerRef.current = null;
+        if (!agentSpeakingRef.current && roomRef.current === room) {
+          micReadyRef.current = true;
+          void setMicEnabled(room, true);
+        }
+      }, 8000);
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Failed to start session");
@@ -110,6 +173,10 @@ export function Playground({ testMode = false }: Props) {
   }
 
   async function endSession() {
+    if (unmuteTimerRef.current) {
+      clearTimeout(unmuteTimerRef.current);
+      unmuteTimerRef.current = null;
+    }
     const room = roomRef.current;
     roomRef.current = null;
     if (room) {
@@ -142,8 +209,8 @@ export function Playground({ testMode = false }: Props) {
             {testMode ? "Integrated playground" : "Guest playground"}
           </h2>
           <p>
-            Speak or type to the Meridian concierge. Each session uses the current voice and FAQ
-            knowledge base.
+            Speak or type to the Meridian concierge. The mic mutes while the assistant is talking so
+            speaker playback is not heard as your voice; wait for Listening, or type anytime.
           </p>
         </div>
         <div className="badge">

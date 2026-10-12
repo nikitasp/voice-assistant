@@ -44,7 +44,11 @@ async def entrypoint(ctx: JobContext) -> None:
         vad=ctx.proc.userdata["vad"],
         turn_detection=MultilingualModel(),
         preemptive_generation=True,
-        allow_interruptions=True,
+        allow_interruptions=settings.allow_interruptions,
+        min_interruption_duration=settings.min_interruption_duration,
+        min_interruption_words=settings.min_interruption_words,
+        resume_false_interruption=settings.resume_false_interruption,
+        false_interruption_timeout=settings.false_interruption_timeout,
         tts_text_transforms=["filter_emoji", "filter_markdown"],
     )
 

@@ -24,6 +24,7 @@ Browser (web/) ──HTTP──► Backend (FastAPI) ──SQL──► Postgres
 - An open row with the same normalized text is incremented first.
 - Otherwise the question is embedded (same MiniLM model as FAQ search). An open row whose cosine similarity is at least `UNANSWERED_SIMILARITY_THRESHOLD` (default `0.82`) is treated as a near-duplicate and incremented; else a new open row is created with its embedding stored.
 - Status values `open` / `converted` / `dismissed` support the admin convert/dismiss flow without schema changes.
+- The concierge prompt requires `search_faq` then `record_unanswered` for every informational guest question, including off-topic ones. Declining without recording left odd asks (e.g. "can I turn to the dark side") out of the admin queue while ordinary unknowns (e.g. "do you have cookies") were captured.
 
 ## Voice stack
 
@@ -32,6 +33,12 @@ Browser (web/) ──HTTP──► Backend (FastAPI) ──SQL──► Postgres
 - **STT**: Deepgram (`STT_API_KEY`).
 - **TTS**: Cartesia (`TTS_API_KEY`), with four PRD voices mapped to Cartesia voice IDs. The active voice is stored in `app_settings` and read by the agent at session start (NF-5). Backend voice previews use `TTS_MODEL` (default `sonic-3`); Cartesia has no TTS model-list API, so the model is configured explicitly.
 - **Health probes**: `GET /api/health/providers` validates OpenAI/Deepgram/Cartesia API keys (token-only) for the admin Health page. Speech generation is checked separately via voice preview. `STT_API_KEY` / `LLM_API_KEY` are available to the backend for those probes; the agent remains the runtime LLM/STT consumer.
+
+## Echo / false interruptions
+
+- Open-speaker setups pick up TTS as guest speech (browser AEC alone was not enough: STT transcribed the agent's own greeting). Two defenses:
+  1. **Playground half-duplex**: mic stays off during agent speech (and briefly after) so echo never reaches STT. Voice barge-in is unavailable in the playground; typed `lk.chat` turns still work.
+  2. **Agent** `ALLOW_INTERRUPTIONS=false` by default so leftover audio cannot cut TTS mid-utterance (`discard_audio_if_uninterruptible`). Thresholds (`MIN_INTERRUPTION_DURATION` / `MIN_INTERRUPTION_WORDS` / false-interruption resume) remain available when interruptions are re-enabled (headphones).
 
 ## Text mode
 
