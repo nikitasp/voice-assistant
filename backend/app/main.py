@@ -42,7 +42,7 @@ def create_app() -> FastAPI:
         embedding_service,
         settings.unanswered_similarity_threshold,
     )
-    voice_service = VoiceService(settings.tts_api_key)
+    voice_service = VoiceService(settings.tts_api_key, settings.tts_model)
 
     @asynccontextmanager
     async def lifespan(_app: FastAPI) -> AsyncIterator[None]:

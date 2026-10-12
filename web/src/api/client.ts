@@ -56,8 +56,35 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+export type HealthStatus = {
+  status: string;
+};
+
+export type ProviderCheck = {
+  ok: boolean;
+  detail: string;
+};
+
+export type ProvidersHealth = {
+  llm: ProviderCheck;
+  stt: ProviderCheck;
+  tts: ProviderCheck;
+};
+
+export type FaqSearchResult = {
+  found: boolean;
+  results: Array<{ id: string; slug: string; question: string; answer: string; score: number }>;
+};
+
 export const api = {
+  health: () => request<HealthStatus>("/health"),
+  providersHealth: () => request<ProvidersHealth>("/api/health/providers"),
   createToken: () => request<LiveKitToken>("/api/livekit/token", { method: "POST", body: "{}" }),
+  searchFaq: (query: string) =>
+    request<FaqSearchResult>("/api/faq/search", {
+      method: "POST",
+      body: JSON.stringify({ query }),
+    }),
 
   listFaq: (params?: { category?: string; q?: string }) => {
     const query = new URLSearchParams();

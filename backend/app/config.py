@@ -11,7 +11,10 @@ class Settings(BaseSettings):
     livekit_api_key: str
     livekit_api_secret: str
     llm_api_key: str | None = None
+    stt_api_key: str | None = None
     tts_api_key: str | None = None
+    # Cartesia TTS model for voice previews (stable family alias preferred).
+    tts_model: str = "sonic-3"
     faq_search_threshold: float = 0.42
     # Near-duplicate unanswered questions (paraphrases) share a row above this score.
     unanswered_similarity_threshold: float = 0.82

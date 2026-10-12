@@ -88,6 +88,7 @@ Admin routes (no auth — assessment scope):
 | `/admin/faqs` | FAQ CRUD |
 | `/admin/unanswered` | Unanswered queue (convert / dismiss) |
 | `/admin/voices` | Select and preview James / Sofia / Marcus / Elena |
+| `/admin/health` | Service probes (env) + microphone / speaker tests |
 | `/admin/playground` | Integrated **Test Mode** playground |
 
 Changing a voice or FAQ applies to the **next** conversation without restarting services (NF-5).
@@ -111,6 +112,7 @@ Interactive docs: http://localhost:8000/docs
 | Method | Path | Purpose |
 | --- | --- | --- |
 | `GET` | `/health` | Liveness |
+| `GET` | `/api/health/providers` | LLM/STT/TTS API key checks (no secrets returned) |
 | `POST` | `/api/faq/search` | Semantic FAQ search (`{ "query": "..." }`) |
 | `GET` | `/api/faq` | List FAQs (`?category=&q=`) |
 | `POST` / `PUT` / `DELETE` | `/api/faq`, `/api/faq/{id}` | FAQ management |

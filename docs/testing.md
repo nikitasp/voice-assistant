@@ -49,6 +49,8 @@ These are the names and shapes the tests rely on.
 - `app.main.create_app()` builds a new FastAPI app, reading settings from the environment on each call. Its lifespan runs migrations and seeding.
 - Table `faq_items` with a unique `slug`, `question`, `answer`. Seed slugs: `backend/tests/data/seed_slugs.yaml`.
 - `GET /health` → `200`.
+- `GET /api/health/providers` → `{ "llm": { "ok", "detail" }, "stt": { "ok", "detail" }, "tts": { "ok", "detail" } }` (validates OpenAI / Deepgram / Cartesia API keys; never returns the secrets).
+
 - `POST /api/faq/search` `{ "query": str }` → `{ "found": bool, "results": [{ "id", "slug", "question", "answer", "score": float }] }`, sorted by score descending; `results` is `[]` when `found` is false. Empty query → `422`.
 - `POST /api/unanswered` `{ "question": str }` → `200`/`201` with `{ "id", "question", "frequency", "first_asked_at", "last_asked_at", "status" }`. Timestamps are ISO 8601 with time zone. Questions differing only in case, surrounding whitespace or trailing punctuation are the same record. Semantically near-identical paraphrases of an open question also increment that record. Empty question → `422`.
 - `GET /api/faq` → list of FAQ items; optional `category` and `q` filters.

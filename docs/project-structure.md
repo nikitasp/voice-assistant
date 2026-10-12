@@ -6,6 +6,7 @@ Guideline for where code and configuration live. Keep this document in sync with
 voice-assistant/
 ├── .cursor/rules/             # Cursor rules (project, backend, agent, web)
 ├── backend/                   # FastAPI — the only service with database access
+│   ├── .dockerignore          # excludes .venv from image builds
 │   ├── pyproject.toml
 │   ├── uv.lock
 │   ├── alembic.ini
@@ -57,7 +58,8 @@ voice-assistant/
 │           ├── playground/    # core (task 09)
 │           ├── faq/           # bonus
 │           ├── unanswered/    # bonus
-│           └── voices/        # bonus
+│           ├── voices/        # bonus
+│           └── health/        # service probes + mic/speaker tests
 ├── deploy/
 │   └── local/                 # Dockerfiles for local run
 │       ├── backend.Dockerfile

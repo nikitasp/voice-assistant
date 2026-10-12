@@ -45,8 +45,9 @@ class VoicePreviewError(RuntimeError):
 
 
 class VoiceService:
-    def __init__(self, tts_api_key: str | None) -> None:
+    def __init__(self, tts_api_key: str | None, tts_model: str = "sonic-3") -> None:
         self._tts_api_key = tts_api_key
+        self._tts_model = tts_model
 
     async def list_voices(self, session: AsyncSession) -> list[VoiceOut]:
         voices = (await session.execute(select(Voice).order_by(Voice.name))).scalars().all()
@@ -106,7 +107,7 @@ class VoiceService:
                     "Content-Type": "application/json",
                 },
                 json={
-                    "model_id": "sonic-english",
+                    "model_id": self._tts_model,
                     "transcript": PREVIEW_TEXT,
                     "voice": {
                         "mode": "id",
@@ -120,8 +121,11 @@ class VoiceService:
                 },
             )
             if response.status_code >= 400:
+                provider_detail = response.text.strip().replace("\n", " ")[:300]
                 raise VoicePreviewError(
                     f"TTS preview failed with status {response.status_code}"
+                    + (f": {provider_detail}" if provider_detail else "")
+                    + f" (model={self._tts_model}, voice={provider_voice_id})"
                 )
             if not response.content.startswith(b"RIFF"):
                 raise VoicePreviewError("TTS preview returned non-WAV audio")

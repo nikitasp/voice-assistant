@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { FaqAdmin } from "./features/faq/FaqAdmin";
+import { HealthCheck } from "./features/health/HealthCheck";
 import { Playground } from "./features/playground/Playground";
 import { UnansweredAdmin } from "./features/unanswered/UnansweredAdmin";
 import { VoicesAdmin } from "./features/voices/VoicesAdmin";
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="admin/faqs" element={<FaqAdmin />} />
         <Route path="admin/unanswered" element={<UnansweredAdmin />} />
         <Route path="admin/voices" element={<VoicesAdmin />} />
+        <Route path="admin/health" element={<HealthCheck />} />
         <Route path="admin/playground" element={<Playground testMode />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

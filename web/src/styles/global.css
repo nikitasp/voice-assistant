@@ -258,6 +258,11 @@ h3 {
   background: var(--accent);
 }
 
+.status-dot.fail {
+  background: var(--danger);
+  box-shadow: 0 0 0 4px rgba(201, 120, 120, 0.18);
+}
+
 .transcript {
   display: flex;
   flex-direction: column;
@@ -332,6 +337,26 @@ h3 {
 .error {
   color: var(--danger);
   margin: 0;
+}
+
+.meter {
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.meter-fill {
+  height: 100%;
+  width: calc(var(--level, 0) * 100%);
+  background: var(--ok);
+  transition: width 60ms linear;
+}
+
+code {
+  font-size: 0.9em;
+  color: var(--accent);
 }
 
 @media (max-width: 900px) {

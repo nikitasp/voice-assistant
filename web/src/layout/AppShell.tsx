@@ -6,6 +6,7 @@ const links = [
   { to: "/admin/unanswered", label: "Unanswered" },
   { to: "/admin/voices", label: "Voices" },
   { to: "/admin/playground", label: "Test Mode" },
+  { to: "/admin/health", label: "Health Check" },
 ];
 
 export function AppShell() {
