@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi import APIRouter
 
 from app.api.deps import SettingsDep
@@ -15,8 +17,9 @@ async def health() -> dict[str, str]:
 @router.get("/api/health/providers", response_model=ProvidersHealthResponse)
 async def providers_health(settings: SettingsDep) -> ProvidersHealthResponse:
     """Validate LLM/STT/TTS API keys without exposing secrets (used by the Health page)."""
-    return ProvidersHealthResponse(
-        llm=await check_llm_token(settings.llm_api_key),
-        stt=await check_stt_token(settings.stt_api_key),
-        tts=await check_tts_token(settings.tts_api_key),
+    llm, stt, tts = await asyncio.gather(
+        check_llm_token(settings.llm_api_key, base_url=settings.llm_base_url),
+        check_stt_token(settings.stt_api_key),
+        check_tts_token(settings.tts_api_key),
     )
+    return ProvidersHealthResponse(llm=llm, stt=stt, tts=tts)

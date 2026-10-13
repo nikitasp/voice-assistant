@@ -43,8 +43,10 @@ cp .env.example .env
 | `POSTGRES_*` / `*_PORT` | Compose | Local ports and DB credentials |
 | `FAQ_SEARCH_THRESHOLD` | Backend | Optional; default `0.42` (Compose passes through) |
 | `UNANSWERED_SIMILARITY_THRESHOLD` | Backend | Optional; default `0.82` (Compose passes through) |
+| `UNANSWERED_TOKEN_OVERLAP` | Backend | Optional; default `0.45` lexical guard for paraphrase merges |
 | `EMBEDDING_MODEL` | Backend | Optional; MiniLM by default (Compose passes through) |
 | `CORS_ORIGINS` | Backend | Optional; for Vite dev (`localhost:5173`) |
+| `LLM_BASE_URL` | Agent, backend health | Optional OpenAI-compatible base URL |
 | `VITE_API_BASE_URL` | Web | Optional API origin; empty = same-origin `/api` |
 
 To use a local LiveKit server instead of Cloud, follow the comments in `.env.example` and start with:

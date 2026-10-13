@@ -55,3 +55,70 @@ async def test_seeding_is_idempotent(running_app, database_url):
     second = await fetch_faq_rows(database_url)
 
     assert len(second) == len(first)
+
+
+async def test_admin_faq_edits_survive_restart(running_app, database_url):
+    """AP-3: seed startup must not overwrite admin edits to an existing FAQ."""
+    original = None
+    async with running_app() as client:
+        listed = await client.get("/api/faq", params={"q": "poker-room"})
+        assert listed.status_code == 200, listed.text
+        item = next(row for row in listed.json() if row["slug"] == "poker-room")
+        original = {
+            "slug": item["slug"],
+            "category": item["category"],
+            "question": item["question"],
+            "answer": item["answer"],
+        }
+        edited_answer = "Admin override: poker room hours are custom for this test."
+        update = await client.put(
+            f"/api/faq/{item['id']}",
+            json={
+                "slug": item["slug"],
+                "category": item["category"],
+                "question": item["question"],
+                "answer": edited_answer,
+            },
+        )
+        assert update.status_code == 200, update.text
+
+    async with running_app():
+        pass
+
+    rows = await fetch_faq_rows(database_url)
+    assert rows["poker-room"][1] == edited_answer
+
+    # Restore seed content so later suite tests keep PRD facts.
+    async with running_app() as client:
+        listed = await client.get("/api/faq", params={"q": "poker-room"})
+        item = next(row for row in listed.json() if row["slug"] == "poker-room")
+        restored = await client.put(f"/api/faq/{item['id']}", json=original)
+        assert restored.status_code == 200, restored.text
+
+
+async def test_admin_faq_deletes_survive_restart(running_app, database_url):
+    """AP-4: seed startup must not recreate an FAQ the admin deleted."""
+    snapshot = None
+    async with running_app() as client:
+        listed = await client.get("/api/faq", params={"q": "wifi"})
+        assert listed.status_code == 200, listed.text
+        item = next(row for row in listed.json() if row["slug"] == "wifi")
+        snapshot = {
+            "slug": item["slug"],
+            "category": item["category"],
+            "question": item["question"],
+            "answer": item["answer"],
+        }
+        deleted = await client.delete(f"/api/faq/{item['id']}")
+        assert deleted.status_code == 204, deleted.text
+
+    async with running_app():
+        pass
+
+    rows = await fetch_faq_rows(database_url)
+    assert "wifi" not in rows
+
+    # Restore so later suite tests that expect the full seed remain stable.
+    async with running_app() as client:
+        restored = await client.post("/api/faq", json=snapshot)
+        assert restored.status_code == 201, restored.text

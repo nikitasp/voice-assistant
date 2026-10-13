@@ -126,6 +126,15 @@ h3 {
   max-width: 42rem;
 }
 
+.page-header .eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .panel {
   background: rgba(26, 34, 44, 0.88);
   border: 1px solid var(--line);

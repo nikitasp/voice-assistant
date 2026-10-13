@@ -41,6 +41,7 @@ def create_app() -> FastAPI:
         faq_service,
         embedding_service,
         settings.unanswered_similarity_threshold,
+        min_token_overlap=settings.unanswered_token_overlap,
     )
     voice_service = VoiceService(settings.tts_api_key, settings.tts_model)
 
@@ -63,9 +64,11 @@ def create_app() -> FastAPI:
     app.state.voice_service = voice_service
 
     origins = [origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()]
+    # Never pair allow_credentials with "*"; fall back to local Vite/Compose origins.
+    allow_origins = origins or ["http://localhost:3000", "http://localhost:5173"]
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=origins or ["*"],
+        allow_origins=allow_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

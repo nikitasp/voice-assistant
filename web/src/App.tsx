@@ -11,6 +11,7 @@ export default function App() {
     <Routes>
       <Route element={<AppShell />}>
         <Route index element={<Playground />} />
+        <Route path="admin/playground" element={<Playground testMode />} />
         <Route path="admin/faqs" element={<FaqAdmin />} />
         <Route path="admin/unanswered" element={<UnansweredAdmin />} />
         <Route path="admin/voices" element={<VoicesAdmin />} />

@@ -76,6 +76,16 @@ async def test_semantic_paraphrases_are_grouped(client):
     assert second["frequency"] == 2
 
 
+async def test_same_topic_with_distinct_markers_stay_separate(client):
+    """Embedding near-matches must not merge rows that only share a topic."""
+    first = await record(client, f"Is there a laundry service on floor {uuid4().hex[:8]}?")
+    second = await record(client, f"Is there a laundry service on floor {uuid4().hex[:8]}?")
+
+    assert second["id"] != first["id"]
+    assert first["frequency"] == 1
+    assert second["frequency"] == 1
+
+
 @pytest.mark.parametrize(
     "payload",
     [{}, {"question": ""}, {"question": "   "}, {"question": "???"}, {"question": "..."}],

@@ -14,6 +14,7 @@ def run_ask(*args: str) -> subprocess.CompletedProcess[str]:
         capture_output=True,
         text=True,
         timeout=120,
+        check=False,
     )
 
 

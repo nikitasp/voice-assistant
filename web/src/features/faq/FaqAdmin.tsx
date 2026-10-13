@@ -10,6 +10,7 @@ const emptyForm = {
 
 export function FaqAdmin() {
   const [items, setItems] = useState<FaqItem[]>([]);
+  const [allCategories, setAllCategories] = useState<string[]>([]);
   const [category, setCategory] = useState("");
   const [q, setQ] = useState("");
   const [form, setForm] = useState(emptyForm);
@@ -17,16 +18,18 @@ export function FaqAdmin() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const categories = useMemo(
-    () => Array.from(new Set(items.map((item) => item.category))).sort(),
-    [items],
-  );
+  const categories = useMemo(() => allCategories, [allCategories]);
 
   async function load() {
     setLoading(true);
     setError(null);
     try {
-      setItems(await api.listFaq({ category: category || undefined, q: q || undefined }));
+      const [filtered, catalog] = await Promise.all([
+        api.listFaq({ category: category || undefined, q: q || undefined }),
+        api.listFaq(),
+      ]);
+      setItems(filtered);
+      setAllCategories(Array.from(new Set(catalog.map((item) => item.category))).sort());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load FAQs");
     } finally {

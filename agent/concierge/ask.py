@@ -12,6 +12,7 @@ import asyncio
 import sys
 from pathlib import Path
 
+import httpx
 from livekit.agents import AgentSession
 from livekit.agents.voice.run_result import ChatMessageEvent, FunctionCallEvent, RunResult
 
@@ -49,10 +50,9 @@ def _load_questions(args: argparse.Namespace) -> list[str]:
 
 
 async def _ask(question: str, property_info: str | None) -> None:
-    async with build_llm() as model:
-        async with AgentSession(llm=model) as session:
-            await session.start(Concierge(property_info=property_info))
-            result = await session.run(user_input=question)
+    async with build_llm() as model, AgentSession(llm=model) as session:
+        await session.start(Concierge(property_info=property_info))
+        result = await session.run(user_input=question)
 
     print(question)
     for line in _format_tool_calls(result):
@@ -66,7 +66,7 @@ async def _ask(question: str, property_info: str | None) -> None:
 async def _main(questions: list[str]) -> None:
     try:
         property_info: str | None = await BackendClient().get_property_info()
-    except Exception as exc:
+    except httpx.HTTPError as exc:
         print(f"warning: could not fetch property information: {exc}", file=sys.stderr)
         property_info = None
     for question in questions:

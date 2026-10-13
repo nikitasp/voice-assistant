@@ -7,8 +7,8 @@ alwaysApply: false
 
 - Python 3.12, `uv`, pinned `livekit-agents` version. Entrypoint is `concierge/main.py` using the LiveKit Agents CLI (`start`, `dev`, `download-files`).
 - The concierge prompt lives in `concierge/prompts/concierge.md`, never inline in code.
-- Property facts come only from `search_faq` results. On no match: call `record_unanswered`, apologize gracefully, confirm the question was noted, offer the front desk (extension 0).
-- All backend calls go through `concierge/backend_client.py` with short timeouts (~2 s); on failure, speak a polite fallback — never crash the session.
+- Property facts come from `search_faq` results and the property information sheet appended at session start (see `docs/technical-decisions.md`). Prefer FAQ when the two differ. On no match in either source: call `record_unanswered`, apologize gracefully, confirm the question was noted only when recording succeeded, offer the front desk (extension 0).
+- All backend calls go through `concierge/backend_client.py` with short timeouts (~2 s); map HTTP failures to stable tool results and speak a polite fallback — never crash the session.
 - Settings only through `concierge/config.py` (pydantic-settings).
 - Fetch the active voice from the backend when a session starts (NF-5).
 - `Concierge` must work in an `AgentSession` with only an LLM (text mode, TC-4) and must not speak in `on_enter`; the entrypoint triggers the greeting.

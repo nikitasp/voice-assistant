@@ -16,7 +16,12 @@ type TranscriptLine = {
   text: string;
 };
 
-export function Playground() {
+type PlaygroundProps = {
+  /** Admin integrated playground (AP-16): prominent Test Mode labeling. */
+  testMode?: boolean;
+};
+
+export function Playground({ testMode = false }: PlaygroundProps) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
@@ -207,14 +212,26 @@ export function Playground() {
     <div className="stack playground">
       <div className="page-header">
         <div>
-          <h2>Guest playground</h2>
+          {testMode ? <p className="eyebrow">Test Mode · Playground</p> : null}
+          <h2>{testMode ? "Admin playground" : "Guest playground"}</h2>
           <p>
+            {testMode
+              ? "Try the concierge with the current voice and FAQ configuration before guests hear it. "
+              : ""}
             Speak or type to the Meridian concierge. The mic mutes while the assistant is talking so
             speaker playback is not heard as your voice; wait for Listening, or type anytime.
           </p>
         </div>
         <div className="badge">
-          <span className={`status-dot ${status === "listening" || status === "speaking" ? (status === "speaking" ? "busy" : "on") : ""}`} />
+          <span
+            className={`status-dot ${
+              status === "connecting" || status === "speaking"
+                ? "busy"
+                : status === "listening"
+                  ? "on"
+                  : ""
+            }`}
+          />
           {statusLabel}
         </div>
       </div>

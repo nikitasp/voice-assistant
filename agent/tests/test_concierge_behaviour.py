@@ -128,13 +128,17 @@ async def property_session(model):
     [
         (
             "What discounts do you have for hotel guests?",
-            "Names at least two partner discounts such as Carbone, Topgolf or helicopter tours. "
-            "Does not say the information is unavailable.",
+            (
+                "Names at least two partner discounts such as Carbone, Topgolf or helicopter tours. "
+                "Does not say the information is unavailable."
+            ),
         ),
         (
             "I want to propose to my girlfriend this weekend. Can you help?",
-            "Responds warmly and suggests the celebration package or Eclipse Lounge. "
-            "Does not say the information is unavailable.",
+            (
+                "Responds warmly and suggests the celebration package or Eclipse Lounge. "
+                "Does not say the information is unavailable."
+            ),
         ),
     ],
 )
@@ -167,6 +171,33 @@ async def test_backend_failure_gives_polite_fallback(session, model):
         intent=(
             "Apologizes that it cannot look this up right now and offers another way to get help, "
             "such as the front desk. Does not state Aurelia's opening hours."
+        ),
+    )
+    assert_speakable(result)
+
+
+async def test_record_failure_does_not_claim_question_was_noted(session, model):
+    """VC-5 / KB-3: search empty but record HTTP failure must not claim the question was saved."""
+
+    def record_failed(context=None, question: str = "") -> str:
+        return (
+            "Recording failed. Do not tell the guest that the question was noted. "
+            "Apologize that you cannot look that up right now and offer the front desk at extension 0."
+        )
+
+    mock_tools(
+        Concierge,
+        {"search_faq": search_returning(), "record_unanswered": record_failed},
+        session=session,
+    )
+
+    result = await session.run(user_input="Do you have a dentist on site?")
+
+    await result.expect.contains_message(role="assistant").judge(
+        model,
+        intent=(
+            "Apologizes that it cannot help or look this up right now and offers the front desk. "
+            "Does not say the question has been noted, recorded, or saved for the team."
         ),
     )
     assert_speakable(result)

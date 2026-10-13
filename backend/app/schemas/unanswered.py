@@ -7,7 +7,7 @@ _TRAILING_PUNCT = re.compile(r"[\s\?\.\!\,\;\:]+$")
 
 
 class UnansweredCreate(BaseModel):
-    question: str = Field(..., min_length=1)
+    question: str = Field(..., min_length=1, max_length=2000)
 
     @field_validator("question")
     @classmethod
@@ -34,6 +34,6 @@ class UnansweredOut(BaseModel):
 
 class UnansweredConvertRequest(BaseModel):
     category: str = Field(..., min_length=1, max_length=64)
-    question: str = Field(..., min_length=1)
-    answer: str = Field(..., min_length=1)
+    question: str = Field(..., min_length=1, max_length=4000)
+    answer: str = Field(..., min_length=1, max_length=8000)
     slug: str | None = Field(default=None, min_length=1, max_length=128)
