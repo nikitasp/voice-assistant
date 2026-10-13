@@ -5,6 +5,24 @@ from livekit.plugins import cartesia, deepgram, openai
 
 from concierge.config import get_settings
 
+# Bias Deepgram toward Meridian proper nouns that STT often mangles (VC-2 / NF-1).
+_STT_KEYTERMS = [
+    "Meridian",
+    "Aurelia",
+    "Silk Road",
+    "Eclipse Lounge",
+    "Café Meridian",
+    "NOVA",
+    "Vegas",
+    "baccarat",
+    "concierge",
+    "valet",
+    "spa",
+    "cabana",
+    "Penthouse",
+    "Chairman's Villa",
+]
+
 
 def build_llm() -> llm.LLM:
     settings = get_settings()
@@ -26,8 +44,9 @@ def build_stt() -> stt.STT:
         raise RuntimeError("STT_API_KEY is not set")
     return deepgram.STT(
         model="nova-3",
-        language="en-US",
+        language="en",
         api_key=settings.stt_api_key,
+        keyterm=_STT_KEYTERMS,
     )
 
 

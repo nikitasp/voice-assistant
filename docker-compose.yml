@@ -72,6 +72,7 @@ services:
       MIN_INTERRUPTION_WORDS: ${MIN_INTERRUPTION_WORDS:-2}
       RESUME_FALSE_INTERRUPTION: ${RESUME_FALSE_INTERRUPTION:-true}
       FALSE_INTERRUPTION_TIMEOUT: ${FALSE_INTERRUPTION_TIMEOUT:-1.5}
+      NOISE_CANCELLATION: ${NOISE_CANCELLATION:-true}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:

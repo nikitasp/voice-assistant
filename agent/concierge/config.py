@@ -28,6 +28,10 @@ class Settings(BaseSettings):
     resume_false_interruption: bool = True
     false_interruption_timeout: float = 1.5
 
+    # LiveKit Cloud Krisp BVC on inbound audio before STT. Disable for self-hosted
+    # LiveKit (profile local-livekit) where enhanced NC is unavailable.
+    noise_cancellation: bool = True
+
 
 def get_settings() -> Settings:
     # Fresh instance so test monkeypatches of env vars are picked up.

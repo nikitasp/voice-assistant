@@ -11,8 +11,8 @@ from livekit.agents import (
     cli,
     room_io,
 )
-from livekit.plugins import silero
-from livekit.plugins.turn_detector.multilingual import MultilingualModel
+from livekit.plugins import noise_cancellation, silero
+from livekit.plugins.turn_detector.english import EnglishModel
 
 from concierge.assistant import Concierge
 from concierge.backend_client import BackendClient
@@ -24,6 +24,13 @@ logger = logging.getLogger("meridian.concierge")
 
 def prewarm(proc: JobProcess) -> None:
     proc.userdata["vad"] = silero.VAD.load()
+
+
+def _audio_input_options(noise_cancellation_enabled: bool) -> room_io.AudioInputOptions:
+    """LiveKit Cloud BVC cleans inbound mic audio before STT (needs Cloud)."""
+    if noise_cancellation_enabled:
+        return room_io.AudioInputOptions(noise_cancellation=noise_cancellation.BVC())
+    return room_io.AudioInputOptions()
 
 
 async def entrypoint(ctx: JobContext) -> None:
@@ -50,7 +57,7 @@ async def entrypoint(ctx: JobContext) -> None:
         llm=build_llm(),
         tts=build_tts(voice_id),
         vad=ctx.proc.userdata["vad"],
-        turn_detection=MultilingualModel(),
+        turn_detection=EnglishModel(),
         preemptive_generation=True,
         allow_interruptions=settings.allow_interruptions,
         min_interruption_duration=settings.min_interruption_duration,
@@ -63,7 +70,10 @@ async def entrypoint(ctx: JobContext) -> None:
     await session.start(
         agent=Concierge(property_info=property_info),
         room=ctx.room,
-        room_options=room_io.RoomOptions(text_input=True),
+        room_options=room_io.RoomOptions(
+            text_input=True,
+            audio_input=_audio_input_options(settings.noise_cancellation),
+        ),
     )
     await session.generate_reply(
         instructions=(

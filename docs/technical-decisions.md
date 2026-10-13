@@ -31,7 +31,9 @@ Browser (web/) ──HTTP──► Backend (FastAPI) ──SQL──► Postgres
 
 - **LiveKit** for realtime rooms (Cloud by default; optional local server via Compose profile `local-livekit`).
 - **LLM**: OpenAI-compatible chat model via LiveKit's OpenAI plugin (`LLM_API_KEY`, optional `LLM_BASE_URL` / `LLM_MODEL`). Defaults to OpenAI; for unpaid local/dev use point `LLM_BASE_URL` at Groq or Ollama.
-- **STT**: Deepgram (`STT_API_KEY`).
+- **STT**: Deepgram Nova-3 (`STT_API_KEY`), locked to English (`language=en`) with property `keyterm` bias (Meridian venue names) for clearer transcripts.
+- **Turn detection**: English turn-detector model (not multilingual) to match the English-only STT path.
+- **Noise cancellation**: LiveKit Cloud Krisp **BVC** on agent inbound audio (`NOISE_CANCELLATION`, default on). Browser WebRTC `echoCancellation` / `noiseSuppression` / `autoGainControl` stay on in the playground; do not stack a second enhanced NC model on the client. Disable BVC when using Compose profile `local-livekit` (`NOISE_CANCELLATION=false`).
 - **TTS**: Cartesia (`TTS_API_KEY`), with four PRD voices mapped to Cartesia voice IDs. The active voice is stored in `app_settings` and read by the agent at session start (NF-5). Backend voice previews use `TTS_MODEL` (default `sonic-3`); Cartesia has no TTS model-list API, so the model is configured explicitly.
 - **Health probes**: `GET /api/health/providers` validates OpenAI/Deepgram/Cartesia API keys (token-only) for the admin Health page. Speech generation is checked separately via voice preview. `STT_API_KEY` / `LLM_API_KEY` are available to the backend for those probes; the agent remains the runtime LLM/STT consumer.
 
@@ -40,6 +42,7 @@ Browser (web/) ──HTTP──► Backend (FastAPI) ──SQL──► Postgres
 - Open-speaker setups pick up TTS as guest speech (browser AEC alone was not enough: STT transcribed the agent's own greeting). Two defenses:
   1. **Playground half-duplex**: mic stays off during agent speech (and briefly after) so echo never reaches STT. Voice barge-in is unavailable in the playground; typed `lk.chat` turns still work.
   2. **Agent** `ALLOW_INTERRUPTIONS=false` by default so leftover audio cannot cut TTS mid-utterance (`discard_audio_if_uninterruptible`). Thresholds (`MIN_INTERRUPTION_DURATION` / `MIN_INTERRUPTION_WORDS` / false-interruption resume) remain available when interruptions are re-enabled (headphones).
+- BVC reduces background *noise* and competing voices; it does not replace AEC for TTS echo into the mic.
 
 ## Text mode
 
