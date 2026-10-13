@@ -105,6 +105,10 @@ h3 {
 }
 
 .main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
   padding: 2rem 2.5rem 3rem;
 }
 
@@ -263,13 +267,38 @@ h3 {
   box-shadow: 0 0 0 4px rgba(201, 120, 120, 0.18);
 }
 
+.playground {
+  flex: 1;
+  min-height: 0;
+}
+
+.playground > .page-header {
+  flex-shrink: 0;
+}
+
+.chat-panel {
+  flex: 1;
+  min-height: 0;
+}
+
 .transcript {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  max-height: 22rem;
+  flex: 1;
+  min-height: 0;
   overflow: auto;
   padding-right: 0.25rem;
+}
+
+.transcript-spacer {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.chat-compose {
+  flex-shrink: 0;
+  align-items: flex-end;
 }
 
 .bubble {
@@ -298,19 +327,6 @@ h3 {
   text-transform: uppercase;
   color: var(--ink-muted);
   margin-bottom: 0.25rem;
-}
-
-.test-banner {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  border: 1px solid rgba(196, 165, 116, 0.45);
-  color: var(--accent);
-  border-radius: 999px;
-  padding: 0.35rem 0.8rem;
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .voice-grid {

@@ -16,17 +16,14 @@ type TranscriptLine = {
   text: string;
 };
 
-type Props = {
-  testMode?: boolean;
-};
-
-export function Playground({ testMode = false }: Props) {
+export function Playground() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const [lines, setLines] = useState<TranscriptLine[]>([]);
   const roomRef = useRef<Room | null>(null);
   const audioEl = useRef<HTMLAudioElement | null>(null);
+  const transcriptRef = useRef<HTMLDivElement | null>(null);
   const agentSpeakingRef = useRef(false);
   const micReadyRef = useRef(false);
   const unmuteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -52,6 +49,12 @@ export function Playground({ testMode = false }: Props) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const el = transcriptRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [lines]);
 
   function appendLine(role: "guest" | "agent", text: string, id?: string) {
     const trimmed = text.trim();
@@ -201,13 +204,10 @@ export function Playground({ testMode = false }: Props) {
   }
 
   return (
-    <div className="stack">
+    <div className="stack playground">
       <div className="page-header">
         <div>
-          {testMode ? <div className="test-banner">Test Mode · Playground</div> : null}
-          <h2 style={{ marginTop: testMode ? "0.75rem" : 0 }}>
-            {testMode ? "Integrated playground" : "Guest playground"}
-          </h2>
+          <h2>Guest playground</h2>
           <p>
             Speak or type to the Meridian concierge. The mic mutes while the assistant is talking so
             speaker playback is not heard as your voice; wait for Listening, or type anytime.
@@ -219,7 +219,7 @@ export function Playground({ testMode = false }: Props) {
         </div>
       </div>
 
-      <div className="panel stack">
+      <div className="panel stack chat-panel">
         <div className="row">
           {status === "idle" || status === "error" ? (
             <button className="btn" type="button" onClick={() => void startSession()}>
@@ -234,7 +234,8 @@ export function Playground({ testMode = false }: Props) {
 
         <audio ref={audioEl} autoPlay />
 
-        <div className="transcript">
+        <div className="transcript" ref={transcriptRef}>
+          <div className="transcript-spacer" aria-hidden />
           {lines.length === 0 ? (
             <p style={{ color: "var(--ink-muted)", margin: 0 }}>
               Transcript appears here for spoken and typed turns.
@@ -249,7 +250,7 @@ export function Playground({ testMode = false }: Props) {
           )}
         </div>
 
-        <form className="row" onSubmit={(e) => void sendText(e)}>
+        <form className="row chat-compose" onSubmit={(e) => void sendText(e)}>
           <div className="field" style={{ flex: 1 }}>
             <label htmlFor="chat">Type a question</label>
             <input

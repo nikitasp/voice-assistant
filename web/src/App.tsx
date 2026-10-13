@@ -15,7 +15,6 @@ export default function App() {
         <Route path="admin/unanswered" element={<UnansweredAdmin />} />
         <Route path="admin/voices" element={<VoicesAdmin />} />
         <Route path="admin/health" element={<HealthCheck />} />
-        <Route path="admin/playground" element={<Playground testMode />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
