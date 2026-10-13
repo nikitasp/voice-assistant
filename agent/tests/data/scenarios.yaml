@@ -38,6 +38,14 @@
     Responds warmly and suggests a celebration option from the property, such as the celebration
     package (from $500, room upgrade, champagne, dinner credit) or Eclipse Lounge.
 
+- id: partner-discounts
+  question: What discounts do you have for hotel guests?
+  tools: [search_faq]
+  intent: >-
+    Names at least two Meridian partner discounts (for example Carbone 15% off, Topgolf free hour,
+    helicopter tours 20% off, Omega Mart $10 off) and mentions showing the room key. Does not say
+    the information is unavailable.
+
 - id: checkout-time
   question: What time is checkout?
   tools: [search_faq]

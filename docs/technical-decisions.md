@@ -17,6 +17,7 @@ Browser (web/) ──HTTP──► Backend (FastAPI) ──SQL──► Postgres
 - **Postgres + pgvector** stores FAQ embeddings next to the rows (NF-1: search stays a single DB query).
 - Embeddings use **`sentence-transformers/all-MiniLM-L6-v2`** (384-d). Cosine distance is computed in SQL; a result counts as a match when similarity `1 - distance` is at least `FAQ_SEARCH_THRESHOLD` (default `0.42`).
 - Seed data lives in `backend/app/seed/faq.yaml` and is upserted by slug on every startup (idempotent).
+- **Property information sheet.** FAQ search returns individual Q&A items, which cannot answer questions that span topics ("what discounts do you have?", "help me plan a proposal"). The full PRD property information lives in `backend/app/seed/property.yaml` and is served by `GET /api/property`. The agent fetches it at session start (in parallel with the active voice, NF-5) and appends it to its instructions, so the LLM can combine facts across sections. It is still called `search_faq` first; when FAQ facts differ from the sheet, the prompt prefers FAQ (admin-maintained). A question is recorded as unanswered only when neither source covers it. Trade-off: about 2.5k extra prompt tokens per turn, and edits to the sheet need a backend restart; FAQ edits apply immediately.
 
 ## Unanswered question grouping
 

@@ -32,6 +32,18 @@ async def session(model: llm.LLM) -> AsyncIterator[AgentSession]:
         yield agent_session
 
 
+@pytest_asyncio.fixture
+async def live_session(backend_url: str, model: llm.LLM) -> AsyncIterator[AgentSession]:
+    """Text-only session set up like the worker: property information fetched from the backend."""
+    from concierge.assistant import Concierge
+    from concierge.backend_client import BackendClient
+
+    property_info = await BackendClient(backend_url).get_property_info()
+    async with AgentSession(llm=model) as agent_session:
+        await agent_session.start(Concierge(property_info=property_info))
+        yield agent_session
+
+
 @pytest.fixture
 def backend_url(monkeypatch: pytest.MonkeyPatch) -> str:
     """Request before `session` so the agent and `concierge.ask` subprocesses use the same backend."""

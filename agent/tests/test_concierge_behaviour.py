@@ -4,7 +4,8 @@ VC-2, VC-3, VC-4, VC-5, VC-6, NF-4, TC-3, TC-4.
 """
 
 import pytest
-from livekit.agents import mock_tools
+import pytest_asyncio
+from livekit.agents import AgentSession, mock_tools
 
 from concierge.assistant import Concierge
 
@@ -98,6 +99,57 @@ async def test_unknown_question_is_recorded_and_apologized(session, model, quest
             "confirms the question has been noted for the team, and does not make up an answer."
         ),
     )
+    assert_speakable(result)
+
+
+PROPERTY_INFO = """\
+Bars & Lounges:
+- Eclipse Lounge: Rooftop bar with Strip views. Craft cocktails, champagne menu. Open 5 PM - 2 AM. Formal attire after 8 PM.
+
+Celebrations & Special Events:
+- Birthday/Anniversary: Celebration packages include room upgrade, champagne, custom cake, and dinner credit. From $500 additional. 72-hour advance notice required.
+
+Partner Discounts (Show Room Key):
+- Carbone (Italian fine dining, 5 min away): 15% off food, priority reservations
+- Top Golf Las Vegas: Free hour with 2-hour booking
+- Helicopter Tours - Vegas Nights Aviation: 20% off Strip tours, complimentary champagne
+"""
+
+
+@pytest_asyncio.fixture
+async def property_session(model):
+    async with AgentSession(llm=model) as agent_session:
+        await agent_session.start(Concierge(property_info=PROPERTY_INFO))
+        yield agent_session
+
+
+@pytest.mark.parametrize(
+    "question,intent",
+    [
+        (
+            "What discounts do you have for hotel guests?",
+            "Names at least two partner discounts such as Carbone, Topgolf or helicopter tours. "
+            "Does not say the information is unavailable.",
+        ),
+        (
+            "I want to propose to my girlfriend this weekend. Can you help?",
+            "Responds warmly and suggests the celebration package or Eclipse Lounge. "
+            "Does not say the information is unavailable.",
+        ),
+    ],
+)
+async def test_answers_from_property_information(property_session, model, question, intent):
+    recorder = UnansweredRecorder()
+    mock_tools(
+        Concierge,
+        {"search_faq": search_returning(), "record_unanswered": recorder},
+        session=property_session,
+    )
+
+    result = await property_session.run(user_input=question)
+
+    assert recorder.questions == [], recorder.questions
+    await result.expect.contains_message(role="assistant").judge(model, intent=intent)
     assert_speakable(result)
 
 

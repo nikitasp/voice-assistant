@@ -40,6 +40,19 @@ class BackendClient:
             response.raise_for_status()
             return response.json()
 
+    async def get_property_info(self) -> str:
+        """The property information sheet as plain text, one `Name: details` line per item."""
+        async with httpx.AsyncClient(timeout=self._timeout) as client:
+            response = await client.get(f"{self._base_url}/api/property")
+            response.raise_for_status()
+            sections: list[dict[str, Any]] = response.json()["sections"]
+        blocks = []
+        for section in sections:
+            lines = [f"{section['title']}:"]
+            lines += [f"- {item['name']}: {item['details']}" for item in section["items"]]
+            blocks.append("\n".join(lines))
+        return "\n\n".join(blocks)
+
     async def get_active_provider_voice_id(self) -> str | None:
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.get(f"{self._base_url}/api/voices")

@@ -60,10 +60,11 @@ These are the names and shapes the tests rely on.
 - `POST /api/unanswered/{id}/dismiss` → status `dismissed`.
 - `GET /api/voices` → four seeded voices with `active` flag; `PUT /api/voices/active` `{ "voice_id" }`; `GET /api/voices/{id}/preview` → WAV audio on success (cached only after a successful TTS generate); `503` when TTS is unavailable (failure is not cached).
 - `POST /api/livekit/token` `{}` → `{ "token", "url", "room" }`; a new room per call; `url` is `LIVEKIT_PUBLIC_URL`.
+- `GET /api/property` → `{ "sections": [{ "title", "items": [{ "name", "details" }] }] }` — the full property information sheet from `docs/requirements.md` (not FAQ items).
 
 ### Agent
 
-- `concierge.assistant.Concierge` — `Agent` subclass, constructed with no arguments, with function tools `search_faq(query)` and `record_unanswered(question)`. It does not speak in `on_enter`; the greeting is triggered by the worker entrypoint.
+- `concierge.assistant.Concierge` — `Agent` subclass, constructed with no arguments (optional `property_info` text is appended to the instructions; the worker, `concierge.ask` and e2e tests pass the sheet from `GET /api/property`), with function tools `search_faq(query)` and `record_unanswered(question)`. It does not speak in `on_enter`; the greeting is triggered by the worker entrypoint.
 - `concierge.models.build_llm()` returns the configured `llm.LLM`.
 - The backend URL comes from the `BACKEND_URL` environment variable.
 - `python -m concierge.ask "question"` and `python -m concierge.ask --file path` print, for each question, the question, the tool calls (name and arguments) and the reply; exit code `0`.
@@ -77,7 +78,8 @@ These are the names and shapes the tests rely on.
 | VC-4 answers when found | `test_answer_uses_facts_from_search_result`, `test_answer_includes_relevant_details`, scenarios |
 | VC-5 graceful no-answer | `test_unknown_question_is_recorded_and_apologized`, scenario `prd-3-pets` |
 | VC-6, NF-4 tone | `test_tone_is_warm_and_professional`, `assert_speakable` in every agent test |
-| KB-1, KB-5 seeded content | `test_seed.py` |
+| KB-1, KB-5 seeded content | `test_seed.py`, `test_property.py` |
+| Answers from property information | `test_answers_from_property_information`, scenario `partner-discounts` |
 | KB-2 semantic matching | `test_faq_search.py::test_question_finds_expected_faq` |
 | KB-3, KB-4 timestamp, frequency | `test_unanswered.py` |
 | API-1, API-3 search endpoint | `test_faq_search.py` |

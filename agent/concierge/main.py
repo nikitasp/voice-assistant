@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from livekit.agents import (
@@ -29,13 +30,20 @@ async def entrypoint(ctx: JobContext) -> None:
     ctx.log_context_fields = {"room": ctx.room.name}
     settings = get_settings()
 
+    backend = BackendClient()
+    active, property_info = await asyncio.gather(
+        backend.get_active_provider_voice_id(),
+        backend.get_property_info(),
+        return_exceptions=True,
+    )
     voice_id = settings.default_tts_voice_id
-    try:
-        active = await BackendClient().get_active_provider_voice_id()
-        if active:
-            voice_id = active
-    except Exception:
-        logger.exception("Could not fetch active voice; using default")
+    if isinstance(active, BaseException):
+        logger.error("Could not fetch active voice; using default", exc_info=active)
+    elif active:
+        voice_id = active
+    if isinstance(property_info, BaseException):
+        logger.error("Could not fetch property information", exc_info=property_info)
+        property_info = None
 
     session = AgentSession(
         stt=build_stt(),
@@ -53,7 +61,7 @@ async def entrypoint(ctx: JobContext) -> None:
     )
 
     await session.start(
-        agent=Concierge(),
+        agent=Concierge(property_info=property_info),
         room=ctx.room,
         room_options=room_io.RoomOptions(text_input=True),
     )

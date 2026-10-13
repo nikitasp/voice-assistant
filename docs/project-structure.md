@@ -22,6 +22,7 @@ voice-assistant/
 │   │   │       ├── faq.py          # search (core) + CRUD (bonus)
 │   │   │       ├── unanswered.py   # record (core) + queue (bonus)
 │   │   │       ├── livekit.py      # room token for the playground
+│   │   │       ├── property.py     # full property information sheet
 │   │   │       └── voices.py       # bonus
 │   │   ├── models/            # SQLAlchemy 2.0 models
 │   │   ├── schemas/           # Pydantic v2 request/response models
@@ -29,9 +30,11 @@ voice-assistant/
 │   │   │   ├── faq_search.py
 │   │   │   ├── embeddings.py
 │   │   │   ├── unanswered.py
+│   │   │   ├── property.py
 │   │   │   └── voices.py
 │   │   └── seed/
-│   │       ├── faq.yaml       # Meridian property data
+│   │       ├── faq.yaml       # FAQ items (searchable knowledge base)
+│   │       ├── property.yaml  # property information sheet from the PRD
 │   │       └── loader.py
 │   └── tests/                 # acceptance tests, see docs/testing.md
 │       ├── data/              # seed_slugs.yaml, search_cases.yaml

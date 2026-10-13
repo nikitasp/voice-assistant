@@ -11,17 +11,22 @@ _PROMPT = Path(__file__).parent.joinpath("prompts/concierge.md").read_text(encod
 
 
 class Concierge(Agent):
-    def __init__(self) -> None:
-        super().__init__(instructions=_PROMPT)
+    def __init__(self, property_info: str | None = None) -> None:
+        instructions = _PROMPT
+        if property_info:
+            instructions += f"\n\n## Property information\n\n{property_info}\n"
+        super().__init__(instructions=instructions)
         self._backend = BackendClient()
 
     @function_tool
     async def search_faq(self, context: RunContext, query: str) -> dict[str, Any]:
-        """Search the Meridian property knowledge base for an answer.
+        """Search the Meridian FAQ knowledge base for an answer.
 
         Call this before answering any guest question that seeks information or a
         yes/no answer, including odd or off-topic questions. Skip only for
-        greetings, thanks, and small talk.
+        greetings, thanks, and small talk. An empty result does not mean the
+        question is unanswered: also check the property information in your
+        instructions.
 
         Args:
             query: The guest's question or a concise search phrase.
@@ -30,10 +35,11 @@ class Concierge(Agent):
 
     @function_tool
     async def record_unanswered(self, context: RunContext, question: str) -> str:
-        """Record a guest question that the knowledge base could not answer.
+        """Record a guest question that neither search_faq nor the property information answers.
 
-        Always call this after search_faq returns no useful match — including when
-        the question is off-topic — before apologizing or declining.
+        Do not call this when the property information in your instructions answers
+        the question, even if search_faq found nothing. Otherwise — including for
+        off-topic questions — call it before apologizing or declining.
 
         Args:
             question: The guest's original question.

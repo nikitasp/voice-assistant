@@ -16,6 +16,7 @@ from livekit.agents import AgentSession
 from livekit.agents.voice.run_result import ChatMessageEvent, FunctionCallEvent, RunResult
 
 from concierge.assistant import Concierge
+from concierge.backend_client import BackendClient
 from concierge.models import build_llm
 
 
@@ -47,10 +48,10 @@ def _load_questions(args: argparse.Namespace) -> list[str]:
     raise SystemExit("Provide a question or --file")
 
 
-async def _ask(question: str) -> None:
+async def _ask(question: str, property_info: str | None) -> None:
     async with build_llm() as model:
         async with AgentSession(llm=model) as session:
-            await session.start(Concierge())
+            await session.start(Concierge(property_info=property_info))
             result = await session.run(user_input=question)
 
     print(question)
@@ -63,8 +64,13 @@ async def _ask(question: str) -> None:
 
 
 async def _main(questions: list[str]) -> None:
+    try:
+        property_info: str | None = await BackendClient().get_property_info()
+    except Exception as exc:
+        print(f"warning: could not fetch property information: {exc}", file=sys.stderr)
+        property_info = None
     for question in questions:
-        await _ask(question)
+        await _ask(question, property_info)
 
 
 def main(argv: list[str] | None = None) -> None:

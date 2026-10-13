@@ -1,0 +1,123 @@
+# The Meridian property information sheet (docs/requirements.md, "Property Information").
+# Served as a whole by GET /api/property so the concierge can combine facts across topics
+# (for example, list every partner discount or plan a proposal). Not FAQ items.
+sections:
+  - title: General Information
+    items:
+      - name: Property Name
+        details: The Meridian Casino & Resort
+      - name: Location
+        details: Las Vegas Strip, Nevada
+      - name: Casino Hours
+        details: 24 hours, 7 days a week
+      - name: Hotel Check-in
+        details: 4:00 PM (early check-in subject to availability)
+      - name: Hotel Check-out
+        details: 11:00 AM (late checkout available for suite guests)
+      - name: Valet Parking
+        details: Complimentary for hotel guests, $25 for visitors
+      - name: Self Parking
+        details: Free for all guests
+      - name: Dress Code
+        details: Smart casual throughout property; formal attire required at Aurelia restaurant and Eclipse Lounge
+      - name: Age Requirement
+        details: 21+ for casino floor and bars; all ages welcome in hotel and family restaurants
+      - name: Wi-Fi
+        details: Complimentary throughout property; premium high-speed available in suites
+
+  - title: Casino Gaming
+    items:
+      - name: Slot Machines
+        details: Over 2,000 machines ranging from $0.01 to $1,000 per spin. Includes latest video slots, classic reels, and progressive jackpots. Largest jackpot currently at $4.2 million.
+      - name: Blackjack
+        details: 40 tables, minimums from $25 to $10,000. Single deck, 6-deck, and Spanish 21 available.
+      - name: Poker Room
+        details: 24/7 operation. Texas Hold'em (No Limit and Limit), Omaha, and Seven Card Stud. Daily tournaments at 11 AM and 7 PM. $200 buy-in for daily tournaments.
+      - name: Roulette
+        details: 12 tables including American, European, and French roulette. Minimums from $15.
+      - name: Baccarat
+        details: 8 tables in main casino, private high-limit salon with 4 tables. Minimums from $50, high-limit from $5,000.
+      - name: Craps
+        details: 6 tables, minimums from $15. Lessons available daily at 10 AM.
+      - name: Sports Book
+        details: 80-seat theater with 40-foot screen. Full bar service. Mobile betting available throughout property via Meridian app.
+      - name: High Limit Salon
+        details: Private gaming area with dedicated hosts. By invitation or $50,000 credit line. Private restrooms, complimentary dining, personal butler service.
+      - name: Players Club
+        details: Meridian Rewards program. Earn points on all play. Tiers are Gold, Platinum, Diamond, and invite-only Black.
+
+  - title: Accommodations
+    items:
+      - name: Deluxe Room
+        details: 450 sq ft. King or two queens. City or pool view. From $299/night.
+      - name: Premier Room
+        details: 550 sq ft. King bed, sitting area. Strip view. From $449/night.
+      - name: Luxury Suite
+        details: 900 sq ft. Separate living room, marble bathroom with soaking tub. From $799/night.
+      - name: Penthouse Suite
+        details: 1,800 sq ft. Two bedrooms, dining room, butler's pantry, private terrace. From $2,500/night.
+      - name: Chairman's Villa
+        details: 4,500 sq ft. Three bedrooms, private pool, personal chef available, 24-hour butler. By inquiry only.
+      - name: Accessible Rooms
+        details: Available in all categories. Roll-in showers, lowered amenities, visual alerts. Request at booking.
+
+  - title: On-Property Restaurants
+    items:
+      - name: Aurelia
+        details: Fine dining. Modern French cuisine by Chef Marcus Webb (2 Michelin stars). Tasting menu $285 per person, à la carte available. Dinner only, 6 PM - 10 PM. Reservations required. Formal attire.
+      - name: Silk Road
+        details: Pan-Asian cuisine. Sushi bar, robata grill, dim sum. Open 11 AM - 11 PM daily. Reservations recommended for dinner. Smart casual. Prices $40-80 per person.
+      - name: The Steakhouse
+        details: Classic American steakhouse. Dry-aged beef, fresh seafood. Open 5 PM - 11 PM. Reservations recommended. Smart casual. Prices $70-150 per person.
+      - name: Café Meridian
+        details: Casual all-day dining. Breakfast buffet 7-11 AM ($45). Lunch and dinner menu until midnight. No reservations needed.
+      - name: Pool Bar & Grill
+        details: Poolside casual. Burgers, salads, cocktails. 10 AM - 6 PM (seasonal). Hotel guests only.
+
+  - title: Bars & Lounges
+    items:
+      - name: Eclipse Lounge
+        details: Rooftop bar with Strip views. Craft cocktails, champagne menu. Open 5 PM - 2 AM. Formal attire after 8 PM.
+      - name: The Vault
+        details: Whiskey and cigar lounge. 400+ whiskey selections. Humidor with premium cigars. Open 4 PM - 2 AM. 21+.
+      - name: Casino Floor Bars
+        details: 6 bars throughout casino. Complimentary drinks for active players. Full service available.
+
+  - title: Entertainment & Amenities
+    items:
+      - name: Meridian Spa
+        details: Full-service spa and salon. Massage, facials, body treatments. Couples suites available. Open 8 AM - 8 PM. Book 24 hours in advance recommended.
+      - name: Fitness Center
+        details: 24-hour access for hotel guests. Personal training available. Peloton bikes, free weights, yoga studio.
+      - name: Pool Complex
+        details: Three pools including adults-only infinity pool. Cabanas from $300/day (includes $100 food credit). Open 8 AM - 8 PM.
+      - name: Meridian Theater
+        details: 1,200-seat venue. Current residency of internationally acclaimed artists (check website for schedule). Tickets from $95. VIP packages available.
+      - name: Nightclub - NOVA
+        details: Premier nightclub. Open Friday and Saturday, 10:30 PM - 4 AM. Cover $50 general, tables from $2,000. Guest list available for hotel guests.
+
+  - title: Celebrations & Special Events
+    items:
+      - name: Weddings
+        details: Multiple venues from intimate chapel to grand ballroom. Packages from $5,000 to $150,000. Wedding coordinator included in all packages.
+      - name: Private Events
+        details: Meeting rooms and ballrooms from 500 to 15,000 sq ft. Full catering and AV services. Corporate rates available.
+      - name: Birthday/Anniversary
+        details: Celebration packages include room upgrade, champagne, custom cake, and dinner credit. From $500 additional. 72-hour advance notice required.
+      - name: Bachelor/Bachelorette
+        details: VIP packages including suite, nightclub table, pool cabana, and spa credits. Starting at $3,000. Must book 1 week in advance.
+
+  - title: Partner Discounts (Show Room Key)
+    items:
+      - name: Carbone (Italian fine dining, 5 min away)
+        details: 15% off food, priority reservations
+      - name: Omega Mart (Immersive art experience)
+        details: $10 off admission
+      - name: Helicopter Tours - Vegas Nights Aviation
+        details: 20% off Strip tours, complimentary champagne
+      - name: Top Golf Las Vegas
+        details: Free hour with 2-hour booking
+      - name: Spa Aquae at JW Marriott
+        details: 10% off treatments (when Meridian Spa fully booked)
+      - name: Fremont Street Experience
+        details: VIP SlotZilla pass, skip the line

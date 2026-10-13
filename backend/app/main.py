@@ -10,7 +10,7 @@ from alembic.config import Config
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import faq, health, livekit, unanswered, voices
+from app.api.routes import faq, health, livekit, property, unanswered, voices
 from app.config import Settings, clear_settings_cache
 from app.db import create_engine, create_session_factory
 from app.seed.loader import seed_database
@@ -76,6 +76,7 @@ def create_app() -> FastAPI:
     app.include_router(unanswered.router)
     app.include_router(livekit.router)
     app.include_router(voices.router)
+    app.include_router(property.router)
     return app
 
 

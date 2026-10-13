@@ -19,8 +19,8 @@ def assert_called_in_order(called: list[str], expected: list[str]) -> None:
 
 
 @pytest.mark.parametrize("scenario", SCENARIOS, ids=lambda s: s["id"])
-async def test_scenario(backend_url, session, model, scenario):
-    result = await session.run(user_input=scenario["question"])
+async def test_scenario(live_session, model, scenario):
+    result = await live_session.run(user_input=scenario["question"])
 
     assert_called_in_order(tool_calls(result), scenario["tools"])
     await result.expect.contains_message(role="assistant").judge(model, intent=scenario["intent"])
