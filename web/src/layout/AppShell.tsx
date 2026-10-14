@@ -2,7 +2,6 @@ import { NavLink, Outlet } from "react-router-dom";
 
 const links = [
   { to: "/", label: "Playground", end: true },
-  { to: "/admin/playground", label: "Test Mode" },
   { to: "/admin/faqs", label: "FAQs" },
   { to: "/admin/unanswered", label: "Unanswered" },
   { to: "/admin/voices", label: "Voices" },
